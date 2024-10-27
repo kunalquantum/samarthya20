@@ -74,4 +74,4 @@ https://github.com/user-attachments/assets/d4e820e7-680e-46b5-b723-29b7348e12ef
 
 + searching score
 
-https://github.com/user-attachments/assets/d4e820e7-680e-46b5-b723-29b7348e12ef
+https://github.com/user-attachments/assets/2cae7c06-d380-4158-a64d-cb0c8d6f0b09
