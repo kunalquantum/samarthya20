@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Algorithm Comparison</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        /* CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .code-input {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            font-weight: bold;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .text-danger {
+            color: #dc3545;
+        }
+        #pie-chart {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container animate__animated animate__fadeIn">
+        <h1 class="text-center mb-4">Search Algorithm Comparison</h1>
+        <div id="codeSection">
+            <div class="form-group">
+                <textarea id="codeInput" class="form-control code-input animate__animated animate__fadeInUp" placeholder="Enter your code here..."></textarea>
+            </div>
+            <button id="matchBtn" class="btn btn-primary btn-block animate__animated animate__fadeInUp">Match Code</button>
+            <p id="warning" class="text-danger mt-2" style="display: none;">Please enter some code before matching.</p>
+        </div>
+        <div id="scoresSection" style="display: none;">
+            <h2 class="mb-3 animate__animated animate__fadeInUp">Similarity Scores:</h2>
+            <div id="similarityScores" class="animate__animated animate__fadeInUp"></div>
+            <button id="backToCodeBtn" class="btn btn-primary mt-3 animate__animated animate__fadeInUp">Back to Code Input</button>
+            <button id="nextToChartBtn" class="btn btn-primary mt-3 float-right animate__animated animate__fadeInUp">Next to Pie Chart</button>
+        </div>
+        <div id="chartSection" style="display: none;">
+            <canvas id="pie-chart" class="mt-4 animate__animated animate__fadeInUp"></canvas>
+            <button id="backToScoresBtn" class="btn btn-primary mt-3 animate__animated animate__fadeInUp">Back to Similarity Scores</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script>
+        // JavaScript code
+        $('#matchBtn').click(function() {
+            var codeInput = $('#codeInput').val().trim();
+            if (codeInput === '') {
+                $('#warning').show();
+            } else {
+                $('#warning').hide();
+                var similarityScores = {};
+                var predefinedModelCode = {
+                    "Binary Search": "def binary_search(arr, target): ...",
+                    "Linear Search": "def linear_search(arr, target): ...",
+                    "Hash Tables": "class HashTable: ...",
+                    "Ternary Search": "def ternary_search(arr, target): ...",
+                    "Jump Search": "import math\n\ndef jump_search(arr, target): ...",
+                    "Interpolation Search": "def interpolation_search(arr, target): ...",
+                    "Exponential Search": "def exponential_search(arr, target): ...",
+                    "Fibonacci Search": "def fibonacci_search(arr, target): ..."
+                    // Add other predefined model code here...
+                };
+                for (var model in predefinedModelCode) {
+                    similarityScores[model] = Math.random().toFixed(2);
+                }
+                displaySimilarityScores(similarityScores);
+                plotPieChart(similarityScores);
+                $('#codeSection').hide();
+                $('#scoresSection').show();
+            }
+        });
+
+        $('#backToCodeBtn').click(function() {
+            $('#scoresSection').hide();
+            $('#codeSection').show();
+        });
+
+        $('#nextToChartBtn').click(function() {
+            $('#scoresSection').hide();
+            $('#chartSection').show();
+        });
+
+        $('#backToScoresBtn').click(function() {
+            $('#chartSection').hide();
+            $('#scoresSection').show();
+        });
+
+        function displaySimilarityScores(scores) {
+            var similarityScoresDiv = $('#similarityScores');
+            similarityScoresDiv.html('');
+            for (var model in scores) {
+                similarityScoresDiv.append(`<p>${model}: ${scores[model]}</p>`);
+            }
+        }
+
+        function plotPieChart(data) {
+            var ctx = document.getElementById('pie-chart').getContext('2d');
+            var labels = Object.keys(data);
+            var values = Object.values(data);
+            var colors = [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+                'rgba(255, 159, 64, 0.7)',
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)'
+            ];
+            var pieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: colors
+                    }]
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '3D Pie Chart of Search Algorithm Comparison'
+                        }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

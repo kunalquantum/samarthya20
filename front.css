@@ -1,0 +1,137 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  
+  }
+  
+  .navbar {
+    background-color: purple;
+    overflow: hidden;
+  }
+  
+  .navbar a {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+  }
+  
+  /* .navbar a:hover {
+    background-color: black;
+  } */
+  
+  @media screen and (max-width: 600px) {
+    .navbar a {
+      float: none;
+      display: block;
+      text-align: left;
+    }
+  }
+  
+  
+  
+  
+  .btn-bd-primary {
+    background-color: purple;
+    --bs-btn-font-weight: 600;
+    --bs-btn-color: var(--bs-white);
+    --bs-btn-bg: var(--bd-violet-bg);
+    --bs-btn-border-color: var(--bd-violet-bg);
+    --bs-btn-hover-color: var(--bs-white);
+    --bs-btn-hover-bg: #{shade-color($bd-violet, 10%)};
+    --bs-btn-hover-border-color: #{shade-color($bd-violet, 10%)};
+    --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+    --bs-btn-active-color: var(--bs-btn-hover-color);
+    --bs-btn-active-bg: #{shade-color($bd-violet, 20%)};
+    --bs-btn-active-border-color: #{shade-color($bd-violet, 20%)};
+  }
+
+  img{
+    background-size: cover;  
+  }
+
+  .card{
+    display: inline-block;
+    margin: 50px;
+    box-shadow: 2px 2px 2px 3px grey;
+    height: 300px;
+    width: 300px;
+    background-color: purple;
+    color: white;
+    border: 1px solid black;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    justify-items: flex-end;
+    align-content: space-between;
+  }
+
+  .card:hover{
+    box-shadow: 4px 4px 4px 5px grey;
+  }
+
+  #card1{
+    width: 100%;
+    height: 75%;
+    background-image: url("card1.jpg");
+    background-size: cover;
+  }
+
+  #card2{
+    width: 100%;
+    height: 75%;
+    background-image: url("card2.jpg");
+    background-size: cover;
+  }
+
+  #card3{
+    width: 100%;
+    height: 75%;
+    background-image: url("card3.jpg");
+    background-size: cover;
+  }
+
+  /* #slide1{
+    background-image: url("slide1.jpeg");
+    background-size: cover;
+  }
+
+  #slide2{
+    background-image: url("slide2.jfif");
+    background-size: cover;
+    object-fit: cover;
+  }
+
+  #slide3{
+    background-image: url("slide3.jpg");
+    background-size: cover;
+  }
+
+  #slide3{
+    background-image: url("slide4.jpg");
+    background-size: cover;
+  }
+
+  #slide3{
+    background-image: url("back.jpg");
+    background-size: cover;
+  } */
+
+  .carousel-inner img{
+    max-height: 500px;
+  max-width: 100%;
+ 
+  height: auto;
+    
+    object-fit: cover;
+  }
+
+  #container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    align-items:center; 
+    /* align-content: baseline; */
+  }

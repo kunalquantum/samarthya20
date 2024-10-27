@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang='en'>
+
+<head>
+    <meta charset='utf-8'>
+    <title>Stack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="shortcut icon" />
+
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/stack.css" />
+
+    <!--script-->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script>
+        function checkSizeOfStackOnInput() {
+            var createStackTextField = document.getElementById("createStackTextField").value;
+
+            if (createStackTextField.length == 0) {
+                document.getElementById("errorSpan").innerHTML = "Invalid Input";
+                validate = false;
+                return;
+            }
+            if (isNaN(createStackTextField)) {
+                document.getElementById("errorSpan").innerHTML = "Invalid Input : Not a number";
+                validate = false;
+                return;
+            } else {
+                validate = true;
+                document.getElementById("errorSpan").innerHTML = "";
+                if (createStackTextField < 2) {
+                    validate = false;
+                    document.getElementById("errorSpan").innerHTML = "Invalid Input";
+                } else {
+                    validate = true;
+                    document.getElementById("errorSpan").innerHTML = "";
+                }
+            }
+        }
+
+        function checkValueOfElementsOnInput() {
+            var valueOfElements = document.getElementById("valueOfElementTextField").value;
+
+            validate = true;
+            document.getElementById("errorSpan").innerHTML = "";
+            if (valueOfElements.length == 0) {
+                validate = false;
+                console.log("-------------")
+                document.getElementById("errorSpan").innerHTML = "Enter some value";
+            } else if (isNaN(valueOfElements)) {
+                validate = false;
+                console.log("-------------nan")
+                document.getElementById("errorSpan").innerHTML = "Invalid Input : Not a number";
+            } else {
+                validate = true;
+                console.log("-------------")
+                document.getElementById("errorSpan").innerHTML = "";
+            }
+        }
+
+        function reset() {
+            location.reload();
+        }
+    </script>
+    <script type="text/javascript">
+        function TypingEffect(canvasContext, x, y, string, delay, style, color) {
+            var string, x, y, delay, canvasContext;
+            var j = 0;
+            this.canvasContext = canvasContext;
+            var THIS = this;
+            this.makeTypingEffect = function(x, y, string, delay, style, color) {
+                if (string) this.string = string;
+                if (x) this.x = x;
+                if (y) this.y = y;
+                if (delay) this.delay = delay;
+                else this.delay = 100;
+                if (style) this.style = style;
+                else this.style = "16px arial";
+                if (color) this.color = color;
+                else this.color = "black";
+                if (j < THIS.string.length) {
+                    THIS.canvasContext.font = THIS.style;
+                    THIS.canvasContext.fillStyle = THIS.color;
+                    THIS.canvasContext.clearRect(THIS.x, THIS.y, 20, 20);
+                    THIS.canvasContext.fillText(THIS.string.charAt(j), THIS.x, THIS.y);
+                    THIS.canvasContext.fillText("_", THIS.x + canvasContext.measureText(THIS.string.charAt(j)).width + 4, THIS.y);
+                    THIS.x = THIS.x + THIS.canvasContext.measureText(THIS.string.charAt(j)).width;
+                    setTimeout(function() {
+                        // clearInterval(m);
+                        THIS.makeTypingEffect(THIS.x, THIS.y, THIS.string, THIS.delay, THIS.style, THIS.color);
+                    }, THIS.delay);
+                    j++;
+                    THIS.canvasContext.font = "20px arial";
+                    THIS.canvasContext.fillStyle = "black";
+                }
+            }
+
+        }
+    </script>
+    <script>
+        function Rectangle(x, y, width, height, value) {
+            var value, x, y, width, height, color;
+            if (value) this.value = value;
+            if (x) this.x = x;
+            if (y) this.y = y;
+            else this.x = 100;
+            if (width) this.width = width;
+            else this.width = rectangleWidth;
+            if (height) this.height = height;
+            else this.height = 60;
+            this.color = rectanglesColor;
+            this.setX = function(X) {
+                this.x = X;
+            }
+            this.setY = function(Y) {
+                this.y = Y;
+            }
+            this.setWidth = function(WIDTH) {
+                this.width = WIDTH;
+            }
+            this.setHeight = function(HEIGHT) {
+                this.height = HEIGHT
+            }
+            this.setValue = function(VALUE) {
+                this.value = VALUE;
+            }
+            this.setColor = function(COLOR) {
+                this.color = COLOR;
+            }
+            this.getX = function() {
+                return this.x;
+            }
+            this.getY = function() {
+                return this.y;
+            }
+            this.getWidth = function() {
+                return this.width;
+            }
+            this.getHeight = function() {
+                return this.height;
+            }
+            this.getValue = function() {
+                return this.value;
+            }
+            this.getColor = function() {
+                return this.color;
+            }
+            this.drawRectangle = function() {
+                canvasContext.font = "20px arial";
+                canvasContext.fillStyle = this.color;
+                //canvasContext.rect(this.x,this.y,this.width,this.height);
+                canvasContext.fillRect(this.x + 2, this.y + 2, this.width - 4, this.height - 4);
+                canvasContext.fillStyle = "black";
+                if (this.value) canvasContext.fillText(this.value, this.x + 10, this.y + (this.height) / 2);
+            }
+        }
+        var rectangles = [];
+        var canvas, myCanvas;
+        var canvasContext;
+        var canvas1;
+        var myCanvasContext;
+        var validate = false;
+        var topOfStack = 0;
+        var x = 100
+        var y = 100;
+        var xx = 200;
+        var height = 60;
+        var rectangleWidth = 100;
+        var spaceBetweenRectangle = 3;
+        var rectanglesColor = '#BAAFCC';
+        var highlightingColor = '#BAAFCC';
+        var swapHappern = -1;
+        var textX;
+        var textY;
+        var animationSpeed = 50;
+        var pauseSpeed = 3000;
+        var popStatus = false;
+        var startStatus = false;
+        window.onload = function() {
+            canvas = document.getElementById("canvas");
+            canvasContext = canvas.getContext("2d");
+            myCanvas = document.getElementById("myCanvas");
+            myCanvasContext = myCanvas.getContext("2d");
+            setCreateMode();
+            var noeInput = document.getElementById("createStackTextField");
+            noeInput.addEventListener("keyup", function(event) {
+                if (event.keyCode == 13) {
+                    event.preventDefault();
+                    if (validate) createStack();
+                }
+            });
+            var noeInput2 = document.getElementById("valueOfElementTextField");
+            noeInput2.addEventListener("keyup", function(event) {
+                if (event.keyCode == 13) {
+                    event.preventDefault();
+                    if (validate) push();
+
+                }
+            });
+        }
+
+        function setCreateMode() {
+            var createStackTextField = document.getElementById("createStackTextField");
+            createStackTextField.value = "";
+            createStackTextField.focus();
+            createStackTextField.style.display = "block";
+            document.getElementById("valueOfElementTextField").style.display = "none";
+            document.getElementById("popButton").style.display = "none";
+            document.getElementById("myRange").disabled = false;
+        }
+
+        function setPushMode() {
+            popStatus = false;
+            document.getElementById("valueOfElementTextField").disabled = false;
+            document.getElementById("popButton").disabled = false;
+            var valueOfElementTextField = document.getElementById("valueOfElementTextField");
+            valueOfElementTextField.value = "";
+            document.getElementById("createStackTextField").style.display = "none";
+            document.getElementById("valueOfElementTextField").style.display = "block";
+            document.getElementById("popButton").style.display = "block";
+            valueOfElementTextField.focus();
+            document.getElementById("myRange").disabled = false;
+            document.getElementById("pos").disabled = false;
+        }
+
+        function setPushingMode() {
+            document.getElementById("valueOfElementTextField").disabled = true;
+            document.getElementById("popButton").disabled = true;
+        }
+
+        function setPoppingMode() {
+            popStatus = true;
+            document.getElementById("valueOfElementTextField").disabled = true;
+            document.getElementById("popButton").disabled = true;
+            document.getElementById("pos").disabled = true;
+        }
+
+        function fill_canvas(img) {
+            myCanvasContext.clearRect(0, 0, myCanvasContext.width, myCanvasContext.height);
+            myCanvasContext.drawImage(img, 80, 10); // DRAW THE IMAGE TO THE CANVAS.
+            myCanvasContext.font = "20px arial";
+            myCanvasContext.fillText("Top->", 55, 50);
+            // console.log("____________");
+            // console.log(createStackTextField.value, topOfStack)
+            myCanvasContext.fillText(createStackTextField - topOfStack, 133, 50);
+        }
+
+        // function draw() {
+        //     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+        //     myCanvasContext.clearRect(0, 0, myCanvas.width, myCanvas.height);
+        //     fill_canvas(image); // CALL THE FUNCTION TO ADD THE IAMGE TO THE CANVAS.
+        //     for (i = 0, yy = y; i < createStackTextField; i++) {
+        //         canvasContext.fillText(i, x - 13, yy + height / 2);
+        //         canvasContext.rect(x, yy, rectangleWidth, height);
+        //         yy = yy + height;
+        //     }
+        //     canvasContext.stroke();
+        //     for (i = 0; i <= rectangles.length - 1; i++) {
+        //         rectangles[i].drawRectangle();
+        //     }
+        // }
+
+        $(function() {
+            var ctx = canvasContext,
+                pos = $('#pos'),
+                image = $('#icon');
+            // fill_canvas(image.get(0));
+            // myCanvasContext.clearRect(0, 0, myCanvas.width, myCanvas.height);
+            // var x = ($pos.val() / 100) * (ctx.canvas.width - 20);
+            // console.log("--------------")
+            $.draw = function() {
+                // console.log("pos is "+/$pos.val());
+                // console.log(ctx.canvas.height)
+                console.log(startStatus);
+                if (!startStatus) return;
+                var yyy = (pos.val() / 100) * (ctx.canvas.height - 10);
+                // console.log(yyy)
+                // console.log("create stack text field"+createStackTextField)
+                // console.log("pos "+$pos.val());
+                // console.log("x is "+x)
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                myCanvasContext.clearRect(0, 0, myCanvas.width, myCanvas.height);
+                fill_canvas(image.get(0));
+                for (i = 0, yy = yyy - ((createStackTextField - 2) * 30); i < createStackTextField; i++) {
+                    ctx.font = "20px arial";
+                    ctx.fillText(i, x - 2 * (ctx.measureText(i).width), yy - (ctx.canvas.height / 2) + 40);
+                    // console.log("x is "+x);
+                    ctx.strokeRect(x, yy - ctx.canvas.height / 2, rectangleWidth, height);
+                    yy = yy + height;
+                }
+                // ctx.fillText("abcd",10,100);
+                // for(var i=0;i<createStackTextField;i++)
+                // {
+                //     ctx.font="20px arial";
+                //     ctx.fillText(createStackTextField-i-1, x-2*(ctx.measureText(i).width) , y+i*height+height/2);
+                //     // console.log("x is "+x);
+                //     ctx.strokeRect(x,y+i*height , rectangleWidth, height);
+                // }
+                if (!popStatus) {
+                    for (var i = 0, yy = yyy - ((createStackTextField - 2) * 30); i <= rectangles.length - 1; i++) {
+                        rectangles[i].y = yy - ctx.canvas.height / 2 + (createStackTextField - 1 - i) * height;
+                        rectangles[i].drawRectangle();
+                    }
+                } else {
+                    if (rectangles.length >= 1) {
+                        rectangles[topOfStack - 1].drawRectangle()
+                    }
+                    for (var i = 0, yy = yyy - ((createStackTextField - 2) * 30); i <= rectangles.length - 2; i++) {
+                        rectangles[i].y = yy - ctx.canvas.height / 2 + (createStackTextField - 1 - i) * height;
+                        rectangles[i].drawRectangle();
+                    }
+                }
+            };
+            // setInterval($.draw, 40);
+        });
+
+        function drawPoppingFooter(i, j, textIndex) {
+            var index;
+            if (textIndex) index = textIndex;
+            else index = 1;
+            (function test1() {
+                var textx = 80;
+                var texty = 300;
+                // animationSpeed = 0.5;
+                var str = "";
+                var typingEffect;
+                if (index == 1) {
+                    var str = "Since, stack is not empty";
+                    myCanvasContext.clearRect(textx, texty - 20, canvas.width - textx, 30);
+                    typingEffect = new TypingEffect(myCanvasContext);
+                    typingEffect.makeTypingEffect(textx, texty, str, animationSpeed);
+                }
+
+                if (index == 2) {
+                    var str = "Therefore, Popping " + parseInt(rectangles[(rectangles.length) - 1].getValue());
+                    myCanvasContext.clearRect(textx, texty - 20, canvas.width - textx, 30);
+                    typingEffect = new TypingEffect(myCanvasContext);
+                    typingEffect.makeTypingEffect(textx, texty, str, animationSpeed);
+                }
+                if (index == 3) {
+                    removeRectangle(topOfStack - 1);
+                    index++;
+                }
+                index++;
+                if (index < 4) {
+                    // var drawFooterTimeout = setTimeout(test1, (animationSpeed > 0 && animationSpeed < 1) ? 6000:6000);
+                    var drawFooterTimeout = setTimeout(test1, pauseSpeed);
+                }
+            })();
+        }
+
+        function drawPushingFooter(i, j, textIndex) {
+            var index;
+            if (textIndex) index = textIndex;
+            else index = 1;
+            (function test2() {
+                var textx = 80;
+                var texty = 300;
+                // animationSpeed/ = 0.5;
+                var str = "";
+                var typingEffect;
+                if (index == 1) {
+                    var str = "Since the value of top is " + parseInt(createStackTextField - topOfStack);
+                    myCanvasContext.clearRect(textx, texty - 30, canvas.width - textx, 40);
+                    typingEffect = new TypingEffect(myCanvasContext);
+                    typingEffect.makeTypingEffect(textx, texty, str, animationSpeed);
+                }
+                if (index == 2) {
+                    myCanvasContext.clearRect(textx, texty - 30, canvas.width - textx, 40);
+                    var str = "As the value of top is greater than 0";
+                    typingEffect = new TypingEffect(myCanvasContext);
+                    typingEffect.makeTypingEffect(textx, texty, str, animationSpeed);
+                }
+                if (index == 3) {
+                    myCanvasContext.clearRect(textx, texty - 30, canvas.width - textx, 40);
+                    str = "Therefore, pushing the element on stack on index " + parseInt(createStackTextField - topOfStack - 1);
+                    typingEffect = new TypingEffect(myCanvasContext);
+                    typingEffect.makeTypingEffect(textx, texty, str, animationSpeed);
+                }
+                if (index == 4) {
+                    swapRectangle();
+                    index++;
+                }
+                index++;
+                if (index < 5) {
+
+                    // var drawCanvasFooterTimeout = setTimeout(test2, (animationSpeed > 0 && animationSpeed < 1) ? 6000:6000);
+                    console.log("animation speed" + animationSpeed);
+                    var drawCanvasFooterTimeout = setTimeout(test2, pauseSpeed);
+                }
+
+            })();
+        }
+
+        function checkAnswer(j) {
+            if (createStackTextField - topOfStack > 0) return "which is greater than 0. Therefore, pushing the element on stack. ";
+            else return "which implies Stack is full. ";
+        }
+
+        function checkDimension() {
+            if (canvas.height < yy) {
+                canvas.height = canvas.height + createStackTextField * (height + spaceBetweenRectangle) - 250;
+            }
+            canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+            $.draw();
+        }
+
+        function createStack() {
+            startStatus = true;
+            var image = document.getElementById('icon');
+            fill_canvas(image);
+            canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+            createStackTextField = document.getElementById("createStackTextField").value;
+            y = 100;
+            yy = (height * createStackTextField) + (createStackTextField * spaceBetweenRectangle) + y;
+            checkDimension();
+            canvasContext.font = "24px arial";
+            setPushMode();
+        }
+        var myVar;
+
+        function push() {
+            setPushingMode();
+            if (topOfStack == createStackTextField) {
+                //alert("Stack Overflow");
+                document.getElementById("errorSpan").innerHTML = "Stack Overflow";
+                document.getElementById("popButton").disabled = false;
+                return;
+            }
+            var num = document.getElementById("valueOfElementTextField").value;
+            var textWidth = canvasContext.measureText(num.value).width;
+            var r = new Rectangle();
+            // var x = 453;
+            r.setX(x + 3 * rectangleWidth);
+            // r.setY(185 + (createStackTextField - topOfStack - 1) * height);
+            // console.log("y is "+topOfStack);
+            // r.setY(y+(createStackTextField - topOfStack - 1) * height);
+            var yyy = ($("#pos").val() / 100) * (canvasContext.canvas.height - 10);
+            var yy = yyy - ((createStackTextField - 2) * 30);
+            r.setY(yy - canvasContext.canvas.height / 2 + (createStackTextField - 1 - topOfStack) * height)
+            r.setValue(parseInt(num));
+            r.drawRectangle();
+            rectangles.push(r);
+            drawPushingFooter();
+        }
+
+        function pop() {
+            setPoppingMode();
+            if (topOfStack == 0) {
+                document.getElementById("errorSpan").innerHTML = "Stack Underflow";
+                document.getElementById("valueOfElementTextField").disabled = false;
+                return;
+            }
+            drawPoppingFooter();
+        }
+
+        // var myVar;
+
+        function swapRectangle() {
+            var j = topOfStack;
+            myVar = setInterval(function() {
+                swapAnimation(rectangles[j])
+            }, animationSpeed);
+        }
+
+        function removeRectangle(j) {
+            myVar = setInterval(function() {
+                swapPop(rectangles[j]);
+            }, animationSpeed);
+        }
+
+        function swapAnimation(r1) {
+            r1.x = r1.x - 3;
+            $.draw();
+            if (r1.x < x + 2) {
+                clearInterval(myVar);
+                setPushMode();
+                topOfStack++;
+                $.draw();
+            }
+        }
+
+        function swapPop(r1) {
+            r1.setY(r1.getY() - 3);
+            $.draw();
+            if (r1.getY() <= 0) {
+                clearInterval(myVar);
+                rectangles.pop();
+                topOfStack--;
+                $.draw();
+                clearInterval(myVar);
+                setPushMode(); //change name as it is ambigiuos change to view mode
+            }
+        }
+
+        function changeSpeed() {
+            var value = document.getElementById("myRange").value;
+            switch (parseInt(value)) {
+                case 1:
+                    animationSpeed = 100;
+                    pauseSpeed = 6000;
+                    break;
+                case 2:
+                    animationSpeed = 90;
+                    pauseSpeed = 5500;
+                    break;
+                case 3:
+                    animationSpeed = 80;
+                    pauseSpeed = 5000;
+                    break;
+                case 4:
+                    animationSpeed = 70;
+                    pauseSpeed = 4500;
+                    break;
+                case 5:
+                    animationSpeed = 60;
+                    pauseSpeed = 3500;
+                    break;
+                case 6:
+                    animationSpeed = 50;
+                    pauseSpeed = 3000;
+                    break;
+                case 7:
+                    animationSpeed = 30;
+                    pauseSpeed = 2500;
+                    break;
+                case 8:
+                    animationSpeed = 15;
+                    pauseSpeed = 1500;
+                    break;
+                case 9:
+                    animationSpeed = 5;
+                    pauseSpeed = 1000;
+                    break;
+                case 10:
+                    animationSpeed = 1;
+                    pauseSpeed = 1000;
+                    break;
+            }
+            console.log("animations spped" + animationSpeed)
+        }
+    </script>
+</head>
+
+<body>
+    <div class="jumbotron text-center w-100 p-3">
+        <div style="float: right;">
+            <img class="img-fluid" src="img/reset.png" id="resetButton" onclick="reset()" width="40" height="40">
+        </div>
+        <h1>Stack</h1>
+    </div>
+    <div class="container-fluid">
+        <span class="badge badge-pill badge-info" id="pauseSpan"></span>
+        <div class="slidecontainer">
+            <font size="4"><b>Speed&nbsp;</b></font>
+            <font color="#8F8D8D" size="2">slow</font>
+            <input type="range" min="1" max="10" value="5" class="slider" id="myRange" onclick='changeSpeed();'>
+            <font color="#8F8D8D" size="2">fast</font>
+        </div>
+    </div>
+    <br><br><br>
+    <center>
+        <div style="height: 600px;width: 1210px;background-color: #fbfbfb69;display:inline-block;">
+            <div style="height: 600px;width: 600px;background-color: #fbfbfb69;display:inline-block; overflow: hidden;">
+                <canvas id="canvas" width="600px" height="595px" style="background-color: #fbfbfb69;"></canvas>
+            </div>
+            <canvas id="myCanvas" width="600px" height="595px" style="background-color: #fbfbfb69;"></canvas>
+        </div>
+        <input id="pos" type="range" min="0" max="100" step="1" value="100" orient="vertical" oninput='$.draw();'>
+        <img src="img/user-icon.png" id="icon" style="display:none" />
+        <br>
+        <span class="invalidText" id="errorSpan"></span>
+        <input placeholder="Enter size of stack ( value more than 1 )" class="form-control" type="text" id="createStackTextField" style="border-radius: 50px;background-color: #f8f8f8;width: 500px; height:40px;font-size: 15pt;padding-left:15px;" oninput="checkSizeOfStackOnInput()">
+        <input placeholder="Enter value to push" class="form-control" type="text" id="valueOfElementTextField" style="border-radius: 50px;background-color: #f8f8f8;width: 500px; height:40px;font-size: 15pt;padding-left:15px;" oninput="checkValueOfElementsOnInput()">
+        <br>
+        <button type="button" id='popButton' class="btn btn-outline-secondary" onclick='pop();' style="width:100px;">Pop</button><br>
+
+    </center>
+
+</body>
+
+</html>

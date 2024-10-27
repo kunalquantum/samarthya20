@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Complexity Analyzer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .code-input {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            font-weight: bold;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .text-success {
+            color: #28a745;
+        }
+        .text-danger {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Time Complexity Analyzer</h1>
+        <div class="form-group">
+            <label for="codeInput">Enter your code here:</label>
+            <textarea id="codeInput" class="form-control code-input" rows="10"></textarea>
+        </div>
+        <button id="analyzeBtn" class="btn btn-primary btn-block">Analyze Time Complexity</button>
+        <div id="result" class="mt-4"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // JavaScript code
+        $('#analyzeBtn').click(function() {
+            var codeInput = $('#codeInput').val().trim();
+            if (codeInput === '') {
+                displayResult('Please enter some code before analyzing.');
+                return;
+            }
+            var timeComplexity = analyzeTimeComplexity(codeInput);
+            if (timeComplexity !== null) {
+                displayResult('Time complexity: <span class="text-success">' + timeComplexity + '</span>');
+            } else {
+                displayResult('<span class="text-danger">Unable to determine time complexity.</span>');
+            }
+        });
+
+        function analyzeTimeComplexity(code) {
+            // Regular expressions to identify common constructs affecting time complexity
+            var loopRegex = /\b(for|while)\b\s*\(([^)]+)\)/g;
+            var loopMatches = code.match(loopRegex);
+            var loopCount = loopMatches ? loopMatches.length : 0;
+
+            if (loopCount === 1) {
+                // Analyze the loop to determine time complexity
+                var loopBody = loopMatches[0].substring(loopMatches[0].indexOf('{') + 1, loopMatches[0].lastIndexOf('}')).trim();
+                var loopBodyLines = loopBody.split('\n');
+                var iterations = countLoopIterations(loopBodyLines);
+                if (iterations === null) {
+                    return null; // Unable to determine time complexity
+                }
+                return 'O(' + iterations + ')';
+            } else {
+                return null; // Unable to determine time complexity
+            }
+        }
+
+        function countLoopIterations(loopBodyLines) {
+            // Placeholder implementation to count loop iterations
+            // This is a simplified approach and may not cover all cases
+            var iterations = 0;
+            for (var i = 0; i < loopBodyLines.length; i++) {
+                if (loopBodyLines[i].trim() !== '') {
+                    iterations++;
+                }
+            }
+            return iterations;
+        }
+
+        function displayResult(result) {
+            $('#result').html('<h2>Analysis Result:</h2><p>' + result + '</p>');
+        }
+    </script>
+</body>
+</html>

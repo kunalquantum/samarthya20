@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang='en'>
+
+<head>
+    <meta charset='utf-8'>
+    <title>Selection Sort</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="shortcut icon" />
+
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/selectionSort.css">
+    <script type="text/javascript">
+        function SwappingEffect() {
+            var animationStatus = 0;
+            this.tempRectangles = [];
+            var speed = 5;
+            this.numberObject;
+            var THIS = this;
+            var rectArray = [];
+            var referenceJ;
+            var referenceI;
+
+            function RectangleValue(X, Y, VALUE) {
+                this.x = X;
+                this.y = Y;
+                this.value = VALUE;
+                this.drawText = function() {
+                    canvasContext.fillText(this.value, this.x, this.y);
+                }
+            }
+
+            function draw() {
+                // if (THIS.tempRectangles.length != 0) canvasContext.clearRect(rectArray[0].x, rectArray[0].y, rectArray[1].x + rectArray[1].width, rectArray[0].height + THIS.tempRectangles[0].height + (THIS.tempRectangles[0].y - (rectArray[0].y + rectArray[0].height)));
+                // else canvasContext.clearRect(rectArray[0].x, rectArray[0].y, rectArray[0].width + rectArray[1].width, rectArray[0].height + rectArray[0].height);
+                if (THIS.tempRectangles.length != 0) canvasContext.clearRect(rectArray[0].x, rectArray[0].y, rectArray[1].x + rectArray[1].width - rectArray[0].x, THIS.tempRectangles[0].y + THIS.tempRectangles[0].height - rectArray[0].y);
+                else canvasContext.clearRect(rectArray[0].x, rectArray[0].y, rectArray[1].x + rectArray[1].width - rectArray[0].x, rectArray[0].height);
+
+                // console.log("Index is "+referencej);
+                if (THIS.tempRectangles.length != 0) canvasContext.fillText("TEMP", THIS.tempRectangles[0].x + THIS.tempRectangles[0].width / 2 - (canvasContext.measureText("TEMP").width / 2), THIS.tempRectangles[0].y - 10);
+                for (var i = referenceI; i <= referenceJ; i++) {
+                    rectangles[i].drawRectangle();
+                    //drawing index
+                    canvasContext.font = "10px arial";
+                    canvasContext.fillText(i, rectangles[i].x + (rectangles[i].width) / 2, rectangles[i].y + rectangles[i].height + 12);
+                    canvasContext.font = "20px arial";
+                    //end of drawing index
+                }
+                if (THIS.tempRectangles.length > 0) THIS.tempRectangles[0].drawRectangle();
+                if (this.numberObject != undefined) this.numberObject.drawText();
+                drawConnectingLine();
+            }
+
+            function drawConnectingLine() {
+                // if (checkIfComplete) return;
+                var r1 = rectArray[0];
+                var r2 = rectArray[1];
+                canvasContext.beginPath();
+                canvasContext.setLineDash([0, 0]);
+                canvasContext.moveTo(r1.x + (r1.width) / 2, 225);
+                canvasContext.lineTo(r1.x + (r1.width) / 2, 250);
+                canvasContext.stroke();
+                canvasContext.beginPath();
+                canvasContext.moveTo(r1.x + (r1.width) / 2, 250);
+                canvasContext.lineTo(r2.x + (r2.width) / 2, 250);
+                canvasContext.stroke();
+                canvasContext.beginPath();
+                canvasContext.moveTo(r2.x + (r2.width) / 2, 250);
+                canvasContext.lineTo(r2.x + (r2.width) / 2, 225);
+                canvasContext.stroke();
+            }
+
+            function findCenterCoordinates(r, TextWidth) {
+                var textWidth;
+                if (TextWidth) textWidth = TextWidth;
+                else textWidth = canvasContext.measureText(r.value).width;
+                var centerX = r.x + r.width / 2 - textWidth / 2;
+                var centerY = r.y + r.height / 2;
+                return [
+                    centerX, centerY
+                ];
+            }
+
+            function giveSpeed(index) {
+                // console.log("speed index "+index);
+                if (index > 1) {
+                    index = index - 1;
+                    speed = speed / index;
+                } else {
+                    if (index > 0 && index < 1) {
+                        index = 1 - index;
+                        speed = speed + speed * index;
+                    }
+                }
+                // console.log("speed"+speed);
+            }
+            this.swapRectangles = function(r1, r2, indexOfSpeed, i, j) {
+                // console.log("indexOfSpeed"+indexOfSpeed);
+                giveSpeed(indexOfSpeed);
+                rectArray.push(r1);
+                rectArray.push(r2);
+                referenceI = i;
+                referenceJ = j;
+
+                var index = 0;
+                var center1 = findCenterCoordinates(r1);
+                var center2 = findCenterCoordinates(r2);
+                var temp = new Rectangle((r1.x + r2.x) / 2, r2.height + r2.y + 100, r2.width, r2.height, "");
+                temp.color = "#F7F2F2";
+                temp.drawRectangle();
+                this.tempRectangles.push(temp);
+
+                (function abcd() {
+                    // console.log(animationStatus);
+                    if (index == 0 && animationStatus == 0) {
+                        animationStatus = 10;
+                        // console.log(THIS.tempRectangles.length);
+                        swapNumber(r2, THIS.tempRectangles[0]);
+                    }
+                    if (index == 1 && animationStatus == 0) {
+                        animationStatus = 10;
+                        swapNumber(r1, r2);
+                    }
+                    if (index == 2 && animationStatus == 0) {
+                        animationStatus = 10;
+                        swapNumber(THIS.tempRectangles[0], r1);
+                    }
+                    if (index == 3 && animationStatus == 0) {
+                        animationStatus = 10;
+                        THIS.tempRectangles.pop();
+                        draw();
+                    }
+                    if (animationStatus == 20) {
+                        animationStatus = 0;
+                        index++;
+                        // if(index==4) return "finished";
+                    }
+                    if (index < 4) {
+                        setTimeout(abcd, 100);
+                    }
+                })();
+            }
+
+            function swapNumber(r1, r2) {
+                var center1 = findCenterCoordinates(r1);
+                var center2 = findCenterCoordinates(r2, canvasContext.measureText(r1.value).width);
+                // console.log("temp rectangle value "+r1.value);
+                this.numberObject = new RectangleValue(center1[0], center1[1], r1.value);
+                r1.value = "";
+                animateNumber(this.numberObject, center2[0], center2[1]);
+            }
+
+            function animateNumber(numberObject, endingX, endingY) {
+                var xd, yd, step, xinc, yinc, numberObject;
+                xd = endingX - numberObject.x;
+                yd = endingY - numberObject.y;
+                var difference = [];
+                difference.push(parseInt(numberObject.x - endingX));
+                difference.push(parseInt(numberObject.y - endingY));
+                if (Math.abs(xd) > Math.abs(yd)) step = Math.abs(xd);
+                else step = Math.abs(yd);
+                xinc = (xd / step);
+                yinc = (yd / step);
+                (function lmn() {
+                    draw();
+                    numberObject.x = numberObject.x + speed * xinc;
+                    numberObject.y = numberObject.y + speed * yinc;
+                    // console.log("final Speed "+speed);
+                    var m = setTimeout(lmn, 10);
+                    // console.log(count++);
+                    if (compareRect(numberObject.x, endingX, difference[0])) {
+                        xinc = 0;
+                    }
+                    if (compareRect(numberObject.y, endingY, difference[1])) {
+                        yinc = 0;
+                    }
+                    // console.log("good");
+                    if (compareRect(numberObject.x, endingX, difference[0]) && compareRect(numberObject.y, endingY, difference[1])) {
+                        clearInterval(m);
+                        var r = findRectangle(endingX, endingY, numberObject.value);
+                        r.value = numberObject.value;
+                        numberObject.value = "";
+                        animationStatus = 20;
+                    }
+                })();
+            }
+
+            function compareRect(start, end, difference) {
+                if (difference < 0) {
+                    if (Math.ceil(start) > Math.ceil(end)) return true;
+                    else return false;
+                }
+                if (difference > 0) {
+                    if (Math.ceil(start) <= Math.ceil(end)) return true;
+                    else return false;
+                }
+                if (difference == 0) {
+                    if (Math.ceil(start) == Math.ceil(end)) return true;
+                    else return false;
+
+                }
+            }
+
+            function findRectangle(centerX, centerY, value) {
+                var center;
+                // console.log(centerX,centerY);
+                for (var i = 0; i <= rectangles.length - 1; i++) {
+                    center = findCenterCoordinates(rectangles[i], canvasContext.measureText(value).width);
+                    // console.log(center[0],center[1]);
+                    if (Math.abs(center[0]) == Math.abs(centerX) && Math.abs(center[1]) == Math.abs(centerY)) return rectangles[i];
+                }
+                return THIS.tempRectangles[0];
+            }
+        }
+    </script>
+
+    <script type="text/javascript">
+        function TypingEffect(canvasContext, x, y, string, delay, style, color) {
+            var string, x, y, delay, canvasContext;
+            var j = 0;
+            this.canvasContext = canvasContext;
+            var THIS = this;
+            this.makeTypingEffect = function(x, y, string, delay, style, color) {
+                if (string) this.string = string;
+                if (x) this.x = x;
+                if (y) this.y = y;
+                if (delay) this.delay = delay;
+                else this.delay = 100;
+                if (style) this.style = style;
+                else this.style = "16px arial";
+                if (color) this.color = color;
+                else this.color = "black";
+                if (j < THIS.string.length) {
+                    THIS.canvasContext.font = THIS.style;
+                    THIS.canvasContext.fillStyle = THIS.color;
+                    THIS.canvasContext.clearRect(THIS.x, THIS.y, 20, 20);
+                    THIS.canvasContext.fillText(THIS.string.charAt(j), THIS.x, THIS.y);
+                    THIS.canvasContext.fillText("_", THIS.x + canvasContext.measureText(THIS.string.charAt(j)).width + 4, THIS.y);
+                    THIS.x = THIS.x + THIS.canvasContext.measureText(THIS.string.charAt(j)).width;
+                    setTimeout(function() {
+                        // clearInterval(m);
+                        THIS.makeTypingEffect(THIS.x, THIS.y, THIS.string, THIS.delay, THIS.style, THIS.color);
+                    }, THIS.delay);
+                    j++;
+                    THIS.canvasContext.font = "20px arial";
+                    THIS.canvasContext.fillStyle = "black";
+                }
+            }
+
+        }
+    </script>
+    <script>
+        function checkSizeOfArrayOnInput() {
+            var numberOfElements = document.getElementById("createArrayTextField").value;
+
+            if (numberOfElements.length == 0) {
+                document.getElementById("errorSpan").innerHTML = "Invalid Input";
+                validate = false;
+                return;
+            }
+            if (isNaN(numberOfElements)) {
+                document.getElementById("errorSpan").innerHTML = "Invalid Input :Not a number";
+                validate = false;
+                return;
+            } else {
+                validate = true;
+                document.getElementById("errorSpan").innerHTML = "";
+                if (numberOfElements < 2) {
+                    validate = false;
+                    document.getElementById("errorSpan").innerHTML = "Invalid Input";
+                } else {
+                    validate = true;
+                    document.getElementById("errorSpan").innerHTML = "";
+                }
+            }
+
+        }
+
+        function checkValueOfElementsOnInput() {
+            var valueOfElements = document.getElementById("valueOfElementTextField").value;
+
+            validate = true;
+            document.getElementById("errorSpan").innerHTML = "";
+            if (valueOfElements.length == 0) {
+                validate = false;
+                document.getElementById("errorSpan").innerHTML = "Enter some value";
+            } else if (isNaN(valueOfElements)) {
+                validate = false;
+                document.getElementById("errorSpan").innerHTML = "Invalid Input :Not a number";
+            } else {
+                validate = true;
+                document.getElementById("errorSpan").innerHTML = "";
+            }
+        }
+    </script>
+    <script>
+        function Rectangle(x, y, width, height, value) {
+            var value, x, y, width, height, color;
+            if (value) this.value = value;
+            if (x) this.x = x;
+            if (y) this.y = y;
+            else this.y = 30;
+            if (width) this.width = width;
+            else this.width = rectangleWidth;
+            if (height) this.height = height;
+            else this.height = 60;
+            this.color = rectanglesColor;
+            this.setX = function(X) {
+                this.x = X;
+            }
+            this.setY = function(Y) {
+                this.y = Y;
+            }
+            this.setWidth = function(WIDTH) {
+                this.width = WIDTH;
+            }
+            this.setHeight = function(HEIGHT) {
+                this.height = HEIGHT
+            }
+            this.setValue = function(VALUE) {
+                this.value = VALUE;
+            }
+            this.setColor = function(COLOR) {
+                this.color = COLOR;
+            }
+            this.getX = function() {
+                return this.x;
+            }
+            this.getY = function() {
+                return this.y;
+            }
+            this.getWidth = function() {
+                return this.width;
+            }
+            this.getHeight = function() {
+                return this.height;
+            }
+            this.getValue = function() {
+                return this.value;
+            }
+            this.getColor = function() {
+                return this.color;
+            }
+            this.drawRectangle = function() {
+                canvasContext.fillStyle = this.color;
+                canvasContext.fillRect(this.x, this.y, this.width, this.height);
+                canvasContext.fillStyle = "black";
+                var textWidth = canvasContext.measureText(this.value).width;
+                if (this.value || this.value == 0) canvasContext.fillText(this.value, this.x + (this.width) / 2 - textWidth / 2, this.y + (this.height) / 2);
+                //here this.x+10 where 10 is act as margin
+            }
+        }
+        var rectangles = [];
+        var originalRectangles = [];
+        var canvas;
+        var canvasContext;
+        var x = 10;
+        var rectangleWidth = 50;
+        var spaceBetweenRectangle = 3;
+        var rectanglesColor = '#8BBEE6FF';
+        var highlightingColor = '#CDE2B8';
+        var swapHappern = -1;
+        var sorting = [];
+        var validate = false;
+        var checkIfComplete = false;
+        var animationSpeed = 1;
+        var pause = false;
+        var stop = false;
+        var pausedValues = {};
+        var swapTimeout;
+        var bubbleSortTimeout;
+        var drawCanvasFooterTimeout;
+        var drawCanvasFooter2Timeout;
+        var swappingEffect;
+        window.onload = function() {
+            canvas = document.getElementById("myCanvas");
+            canvasContext = canvas.getContext("2d");
+            setCreateMode();
+            var noeInput = document.getElementById("createArrayTextField");
+            noeInput.addEventListener("keyup", function(event) {
+                if (event.keyCode == 13) {
+                    event.preventDefault();
+                    if (validate) CreateElements();
+                }
+            });
+            var noeInput2 = document.getElementById("valueOfElementTextField");
+            noeInput2.addEventListener("keyup", function(event) {
+                if (event.keyCode == 13) {
+                    event.preventDefault();
+                    if (validate) AddElement();
+
+                }
+            });
+        }
+
+        function setCreateMode() {
+            var createArrayTextField = document.getElementById("createArrayTextField");
+            createArrayTextField.value = "";
+            createArrayTextField.focus();
+            createArrayTextField.style.display = "block";
+            document.getElementById("valueOfElementTextField").style.display = "none";
+            document.getElementById("sortButton").style.display = "none";
+            document.getElementById("sortButton").style.display = "none";
+            document.getElementById("playButton").style.display = "none";
+            document.getElementById("pauseButton").style.display = "none";
+            document.getElementById("stopButton").style.display = "none";
+            document.getElementById("pauseSpan").style.visibility = "visible";
+            document.getElementById("pauseSpan").innerHTML = "";
+            document.getElementById("myRange").disabled = false;
+        }
+
+        function setAddMode() {
+            var valueOfElementTextField = document.getElementById("valueOfElementTextField");
+            valueOfElementTextField.value = "";
+            document.getElementById("createArrayTextField").style.display = "none";
+            document.getElementById("valueOfElementTextField").style.display = "block";
+            document.getElementById("sortButton").style.display = "none";
+            valueOfElementTextField.focus();
+        }
+
+        function setSortMode() {
+            var sortButton = document.getElementById("sortButton");
+            sortButton.value = "";
+            document.getElementById("resetButton").disabled = true;
+            document.getElementById("createArrayTextField").style.display = "none";
+            document.getElementById("valueOfElementTextField").style.display = "none";
+            document.getElementById("sortButton").style.display = "block";
+            sortButton.focus();
+        }
+
+        function setSortingMode() {
+            document.getElementById("sortButton").style.display = "none";
+            document.getElementById("playButton").style.display = "none";
+            document.getElementById("pauseButton").style.display = "inline";
+            document.getElementById("stopButton").style.display = "inline";
+            document.getElementById("myRange").disabled = true;
+        }
+
+        function setPauseMode() {
+            pause = true;
+            document.getElementById("myRange").disabled = false;
+            document.getElementById("sortButton").style.display = "none";
+            document.getElementById("playButton").style.display = "inline";
+            document.getElementById("pauseButton").style.display = "none";
+            document.getElementById("stopButton").style.display = "inline";
+            document.getElementById("pauseSpan").innerHTML = "Paused !";
+        }
+
+        function setPausingMode() {
+            pause = true;
+            document.getElementById("pauseSpan").innerHTML = "Pausing";
+            document.getElementById("pauseButton").style.display = "none";
+        }
+
+        function setPauseValues(fk, i, j, min, textIndex, r1, r2) {
+            //function key values
+            //10 -> bubbleSort function
+            //20 -> drawCanvasFooter function
+            //30 -> swapAnimation
+            pausedValues["functionKey"] = fk;
+            pausedValues["i"] = i;
+            pausedValues["j"] = j;
+            pausedValues["min"] = min;
+            pausedValues["textIndex"] = textIndex;
+            pausedValues["rectangle1"] = r1;
+            pausedValues["rectangle2"] = r2;
+            // console.log(pausedValues);
+        }
+
+        function setPlayMode() {
+            pause = false;
+            document.getElementById("sortButton").style.display = "none";
+            document.getElementById("playButton").style.display = "none";
+            document.getElementById("pauseButton").style.display = "inline";
+            document.getElementById("stopButton").style.display = "inline";
+            document.getElementById("pauseSpan").innerHTML = "";
+            document.getElementById("myRange").disabled = true;
+            // pausedValues={};
+        }
+
+        function setFinishedMode() {
+            document.getElementById("sortButton").style.display = "none";
+            document.getElementById("playButton").style.display = "none";
+            document.getElementById("pauseButton").style.display = "none";
+            document.getElementById("stopButton").style.display = "none";
+            document.getElementById("statusSpan").innerHTML = "Finished !";
+        }
+
+        function setStoppingMode() {
+            pause = true;
+            stop = true;
+            document.getElementById("pauseSpan").innerHTML = "Stopping";
+            document.getElementById("sortButton").style.display = "none";
+            document.getElementById("playButton").style.display = "none";
+            document.getElementById("pauseButton").style.display = "none";
+            document.getElementById("stopButton").style.display = "none";
+            document.getElementById("myRange").disabled = true;
+        }
+
+        function draw() {
+            canvasContext.font = "20px arial";
+            canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+            canvasContext.fillText("Input Array", 10, 20);
+            if (sorting.length != 0 && !checkIfComplete) canvasContext.fillText("Sorting", 10, 130);
+            if (sorting.length != 0 && checkIfComplete) canvasContext.fillText("Sorted Array", 10, 130);
+            for (var i = 0; i <= originalRectangles.length - 1; i++) {
+                originalRectangles[i].drawRectangle();
+                //drawing index of rectangles
+                canvasContext.font = "10px arial";
+                canvasContext.fillText(i, originalRectangles[i].x + (originalRectangles[i].width) / 2, originalRectangles[i].y + originalRectangles[i].height + 12);
+                canvasContext.font = "20px arial";
+                //end of drawing index of rectangles
+                if (rectangles.length == originalRectangles.length) {
+                    canvasContext.font = "10px arial";
+                    canvasContext.fillText(i, rectangles[i].x + (rectangles[i].width) / 2, rectangles[i].y + rectangles[i].height + 12);
+                    canvasContext.font = "20px arial";
+                    rectangles[i].drawRectangle();
+                }
+            }
+            if (swapHappern == 1 && swappingEffect.tempRectangles.length > 0) swappingEffect.tempRectangles[0].drawRectangle();
+            if (swappingEffect && swappingEffect.numberObject != undefined) swappingEffect.numberObject.drawText();
+            if (sorting.length != 0 && sorting[1] != sorting[2] && sorting[1] < rectangles.length) drawConnectingLine(sorting[2], sorting[1]);
+            else if (sorting[1] == rectangles.length) drawConnectingLine(sorting[0], sorting[2]);
+            if (sorting.length != 0) drawLimitLine();
+            if (sorting.length != 0 && !checkIfComplete) canvasContext.fillText("The value of minimun is " + rectangles[sorting[2]].value, 20, 400);
+        }
+
+        function drawConnectingLine(i, j) {
+            if (checkIfComplete) return;
+            console.log(i, j);
+            var r1 = rectangles[i];
+            var r2 = rectangles[j];
+            // console.log("connecting line function chala");
+            canvasContext.beginPath();
+            canvasContext.setLineDash([0, 0]);
+            canvasContext.moveTo(r1.x + (r1.width) / 2, 225);
+            canvasContext.lineTo(r1.x + (r1.width) / 2, 250);
+            canvasContext.stroke();
+            canvasContext.beginPath();
+            canvasContext.moveTo(r1.x + (r1.width) / 2, 250);
+            canvasContext.lineTo(r2.x + (r2.width) / 2, 250);
+            canvasContext.stroke();
+            canvasContext.beginPath();
+            canvasContext.moveTo(r2.x + (r2.width) / 2, 250);
+            canvasContext.lineTo(r2.x + (r2.width) / 2, 225);
+            canvasContext.stroke();
+        }
+
+        function drawLimitLine() {
+            if (checkIfComplete) return;
+            canvasContext.font = "12px arial";
+            canvasContext.setLineDash([5, 3]);
+            canvasContext.beginPath();
+            canvasContext.strokeStyle = "red";
+            if (sorting[0] != rectangles.length - 1) canvasContext.moveTo(10 + (rectangles[sorting[0]].width + 3) * (sorting[0]), 147);
+            else canvasContext.moveTo(10 + (rectangles[sorting[0]].width + 3) * (sorting[0] + 1), 147);
+
+            if (sorting[0] != rectangles.length - 1) canvasContext.lineTo(10 + (rectangles[sorting[0]].width + 3) * (sorting[0]), 220);
+            else canvasContext.lineTo(10 + (rectangles[sorting[0]].width + 3) * (sorting[0] + 1), 220);
+            canvasContext.stroke();
+            canvasContext.strokeStyle = "black";
+            if (sorting[0] == 0) canvasContext.fillText("Starting", 0, 145);
+            else if (sorting[0] != rectangles.length - 1) canvasContext.fillText("Starting", 10 + (rectangles[sorting[0]].width + 3) * (sorting[0]) - (canvasContext.measureText("Starting").width) / 2, 145);
+            else canvasContext.fillText("Starting", 10 + (rectangles[sorting[0]].width + 3) * (sorting[0] + 1) - (canvasContext.measureText("Starting").width) / 2, 145);
+            canvasContext.font = "20px arial";
+
+        }
+
+        function checkAnswer(i, j) {
+            if (rectangles[i].value > rectangles[j].value) return "we set value of minimum to " + rectangles[j].value;
+            else return "the value of minimum is unchanged.";
+        }
+
+        function checkAnswer2(i, j) {
+            if (i != j) return "Swap the value of " + rectangles[i].value + " and " + rectangles[j].value;
+            else return "No swapping is required.";
+        }
+
+
+        function checkSign(i, j) {
+            if (rectangles[i].value < rectangles[j].value) return "not greater than";
+            else if (rectangles[i].value > rectangles[j].value) return "greater than";
+            else return "not greater than";
+        }
+
+        function checkDimension() {
+            if (canvas.width < x) {
+                canvas.width = canvas.width + rectangleWidth + spaceBetweenRectangle;
+            }
+            draw();
+        }
+
+        function CreateElements() {
+            canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+            var numberOfElements = document.getElementById("createArrayTextField");
+            // console.log(numberOfElements.value);
+            for (var i = 0; i <= numberOfElements.value - 1; i++) {
+                var r = new Rectangle();
+                r.setX(x);
+                r.drawRectangle();
+                x = x + rectangleWidth + spaceBetweenRectangle;
+                checkDimension();
+                originalRectangles.push(r);
+            }
+            draw();
+            setAddMode();
+        }
+
+        function AddElement() {
+            var v = document.getElementById("valueOfElementTextField");
+            if (v.value.length == 0) return
+            var createArrayTextField = document.getElementById("createArrayTextField");
+            //here we check widt h of our text and check that is font is overflow
+            var textWidth = canvasContext.measureText(v.value).width;
+            // console.log(textWidth);
+            if (textWidth + 10 > rectangleWidth) {
+                var difference = textWidth - rectangleWidth + 10
+                    // console.log(difference);
+                rectangleWidth = rectangleWidth + (difference);
+                // console.log(rectangleWidth);
+                x = 10;
+                for (var i = 0; i <= createArrayTextField.value - 1; i++) {
+                    originalRectangles[i].setX(x);
+                    originalRectangles[i].drawRectangle();
+                    originalRectangles[i].width = rectangleWidth;
+                    x = x + rectangleWidth + spaceBetweenRectangle;
+                    checkDimension();
+                }
+                draw();
+            }
+            for (var i = 0; i <= originalRectangles.length - 1; i++) {
+                if (!(originalRectangles[i].value || originalRectangles[i].value == 0)) break;
+            }
+            if (i > originalRectangles.length) {
+                // alert("more numbers than expected");
+                document.getElementById("addElementErrorSpan").innerHTML = "Size limit exceeded";
+                return;
+            }
+            // console.log(textWidth);
+            originalRectangles[i].value = parseInt(v.value);
+            originalRectangles[i].drawRectangle();
+            if (i == originalRectangles.length - 1) {
+                setSortMode();
+                return;
+            }
+            setAddMode();
+            v.placeholder = "Enter value of index " + parseInt(i + 1);
+        }
+
+        function SortElement() {
+            // document.getElementById("myRange").disabled=true;
+            setSortingMode();
+            makeSortingElements();
+            selectionSort();
+            draw();
+        }
+
+        function makeSortingElements() {
+            for (var i = 0; i <= originalRectangles.length - 1; i++) {
+                var m = originalRectangles[i];
+                var r = new Rectangle();
+                r.setX(m.getX());
+                r.setY(150);
+                r.setValue(m.getValue());
+                rectangles.push(r);
+            }
+            draw();
+        }
+
+        function selectionSort(playI, playJ, playMin) {
+            var i, j, min;
+            if (playI) i = playI;
+            else i = 0;
+            if (playJ) j = playJ;
+            else j = 1;
+            var length = rectangles.length;
+            if (playMin) min = playMin;
+            else min = 0;
+            (function nextIteration() {
+                if (j > length) {
+                    releaseAllColor();
+                    i++;
+                    min = i;
+                    j = i + 1;
+                }
+                if (j == length) {
+                    if (i != min) {
+                        sorting = [i, j, min];
+                        releaseAllColor();
+                        changeColor(i, min);
+                        drawConnectingLine(i, min);
+                        drawCanvasFooter2(i, j, min);
+                        setTimeout(function() {
+                            j++;
+                            nextIteration();
+                        }, (animationSpeed > 0 && animationSpeed < 1) ? 23000 * animationSpeed : 20000 * (animationSpeed / 2));
+                    } else {
+                        setTimeout(function() {
+                            j++;
+                            nextIteration();
+                        }, 4000);
+                    }
+                }
+                if (j < length) {
+                    // console.log(pausedValues["functionKey"]==undefined);
+                    // console.log("pause is "+pause);
+                    if (pause) {
+                        clearTimeout(drawCanvasFooterTimeout);
+                        clearTimeout(swapTimeout);
+                        clearTimeout(bubbleSortTimeout);
+                        clearTimeout(drawCanvasFooter2Timeout);
+                        if (!stop) setPauseMode();
+                        if (rectangles[min].value > rectangles[j].value) min = j;
+                        sorting = [i, j, min];
+                        setPauseValues(10, i, j, min, 0, rectangles[i], rectangles[j]);
+                        return;
+                    }
+                    sorting = [i, j, min];
+                    // drawLineX = rectangles[j].x; //we use it for draw connecting lines
+                    drawConnectingLine(min, j);
+                    draw();
+                    releaseAllColor();
+                    changeColor(min, j);
+                    drawCanvasFooter(i, j, min);
+                    bubbleSortTimeout = setTimeout(function() {
+                        if (rectangles[min].value > rectangles[j].value) min = j;
+                        sorting = [i, j, min];
+                        draw();
+                        j++;
+                        nextIteration();
+                    }, (animationSpeed > 0 && animationSpeed < 1) ? 26000 * animationSpeed : 21000 * (animationSpeed / 2));
+                }
+                if (i == length - 1) {
+                    releaseAllColor();
+                    checkIfComplete = true;
+                    draw();
+                    setFinishedMode();
+                }
+            })();
+        }
+
+        function drawCanvasFooter(i, j, min, textIndex) {
+            var index;
+            if (textIndex) index = textIndex;
+            else index = 1;
+            if (checkIfComplete) return;
+            (function test2() {
+                // console.log("drawCanvasFooter chala"+index);
+                // console.log(index);
+                if (pause) {
+                    clearTimeout(drawCanvasFooterTimeout);
+                    clearTimeout(swapTimeout);
+                    clearTimeout(bubbleSortTimeout);
+                    clearTimeout(drawCanvasFooter2Timeout);
+                    if (!stop) setPauseMode();
+                    if (rectangles[min].value > rectangles[j].value) min = j;
+                    sorting = [i, j, min];
+                    setPauseValues(20, i, j, min, index, rectangles[i], rectangles[j]);
+                    return;
+                }
+                var textx = 20;
+                var texty = 430;
+                var str = "";
+                var typingEffect;
+                var style = "20px arial"
+                if (index == 1) {
+                    str = " Comparing the values of minimum and current index " + j;
+                    canvasContext.clearRect(10, texty - 20, canvas.width, 500);
+                    typingEffect = new TypingEffect(canvasContext);
+                    typingEffect.makeTypingEffect(textx, texty, str, 30 * animationSpeed, style);
+                }
+                if (index == 2) {
+                    canvasContext.clearRect(20, texty - 20, canvas.width, 500);
+                    var str = " The value at index " + j + " is " + rectangles[j].value;
+                    typingEffect = new TypingEffect(canvasContext);
+                    typingEffect.makeTypingEffect(textx, texty, str, 30 * animationSpeed, style);
+                }
+                if (index == 3) {
+                    canvasContext.clearRect(20, texty - 20, canvas.width, 500);
+                    str = " Since " + rectangles[min].value + " is " + checkSign(min, j) + " " + rectangles[j].value;
+                    typingEffect = new TypingEffect(canvasContext);
+                    typingEffect.makeTypingEffect(textx, texty, str, 30 * animationSpeed, style);
+                }
+                if (index == 4) {
+                    canvasContext.clearRect(20, texty - 20, canvas.width, 500);
+                    str = " Therefore, " + checkAnswer(min, j);
+                    typingEffect = new TypingEffect(canvasContext);
+                    typingEffect.makeTypingEffect(textx, texty, str, 30 * animationSpeed, style);
+                }
+                // console.log("good");
+                index++;
+                if (index < 5) {
+                    // console.log(index);
+                    drawCanvasFooterTimeout = setTimeout(test2, (animationSpeed > 0 && animationSpeed < 1) ? 5000 * (animationSpeed) : 4000 * (animationSpeed / 2));
+                }
+                if (pausedValues["functionKey"] != undefined && index > 4) {
+                    // console.log("hissle");
+                    setTimeout(function() {
+                        selectionSort(pausedValues["i"], pausedValues["j"] + 1, pausedValues["min"]);
+                        pausedValues = {};
+                    }, (animationSpeed > 0 && animationSpeed < 1) ? 1000 : 6000);
+                }
+            })();
+            // console.log("index is "+index);
+        }
+
+        function drawCanvasFooter2(i, j, min, textIndex) {
+            var index;
+            if (textIndex) index = textIndex;
+            else index = 1;
+            if (checkIfComplete) return;
+            (function test2() {
+                // console.log("drawCanvasFooter chala"+index);
+                // console.log(index);
+                if (pause) {
+                    clearTimeout(drawCanvasFooterTimeout);
+                    clearTimeout(swapTimeout);
+                    clearTimeout(bubbleSortTimeout);
+                    clearTimeout(drawCanvasFooter2Timeout);
+                    if (!stop) setPauseMode();
+                    if (rectangles[min].value > rectangles[j].value) min = j;
+                    sorting = [i, j, min];
+                    setPauseValues(30, i, j, min, index, rectangles[i], rectangles[j]);
+                    return;
+                }
+                var textx = 20;
+                var texty = 430;
+                var str = "";
+                var typingEffect;
+                var style = "20px arial"
+                if (index == 1) {
+                    str = " Comparing the index of minimum and index " + i;
+                    canvasContext.clearRect(10, texty - 20, canvas.width, 500);
+                    typingEffect = new TypingEffect(canvasContext);
+                    typingEffect.makeTypingEffect(textx, texty, str, 30 * animationSpeed, style);
+                }
+                if (index == 2) {
+                    canvasContext.clearRect(20, texty - 20, canvas.width, 500);
+                    var str = " Since, The value of minimum and i are " + compareIndex(min, i);
+                    typingEffect = new TypingEffect(canvasContext);
+                    typingEffect.makeTypingEffect(textx, texty, str, 30 * animationSpeed, style);
+                }
+                if (index == 3) {
+                    canvasContext.clearRect(20, texty - 20, canvas.width, 500);
+                    str = " Therefore, " + checkAnswer2(min, i);
+                    typingEffect = new TypingEffect(canvasContext);
+                    typingEffect.makeTypingEffect(textx, texty, str, 30 * animationSpeed, style);
+                }
+                if (index == 4) {
+                    swap(i, min);
+                    index++;
+                }
+                // console.log("good");
+                index++;
+                if (index == 5) {
+                    draw();
+                    swapHappern = -1;
+                }
+                if (index < 6) {
+                    // console.log(index);
+                    drawCanvasFooter2Timeout = setTimeout(test2, (animationSpeed > 0 && animationSpeed < 1) ? 5000 * (animationSpeed) : 4000 * (animationSpeed / 2));
+                }
+                if (pausedValues["functionKey"] != undefined && index > 5) {
+                    setTimeout(function() {
+                        selectionSort(pausedValues["i"], pausedValues["j"] + 1, pausedValues["min"]);
+                        pausedValues = {};
+                    }, (animationSpeed > 0 && animationSpeed < 1) ? 1000 : 6000);
+                }
+            })();
+        }
+
+        function compareIndex(min, i) {
+            if (min == i) return "same";
+            else return "not same";
+        }
+
+        function swap(i, j) {
+            if (rectangles[i].value > rectangles[j].value) {
+
+                canvasContext.clearRect(20, 250, canvas.width, 500);
+                typingEffect = new TypingEffect(canvasContext);
+                typingEffect.makeTypingEffect(20, 430, "Swapping.....", 30 * animationSpeed, "20px arial");
+                swappingEffect = new SwappingEffect();
+                swappingEffect.swapRectangles(rectangles[i], rectangles[j], animationSpeed, i, j);
+                swapHappern = 1;
+            } else {
+                swapHappern = 2;
+            }
+        }
+
+        function changeColor(i, j) {
+            // console.log("good");
+            rectangles[i].color = highlightingColor;
+            rectangles[j].color = highlightingColor;
+            draw();
+        }
+
+        function releaseAllColor() {
+            for (var i = 0; i <= rectangles.length - 1; i++) {
+                rectangles[i].color = rectanglesColor;
+            }
+        }
+
+        function reset() {
+            location.reload();
+        }
+
+        function changeSpeed() {
+            var speed = 1;
+            animationSpeed = 1;
+            speed = document.getElementById("myRange").value;
+            speed = (-1) * speed;
+            if (speed > 0) animationSpeed = animationSpeed * speed;
+            if (speed < 0) animationSpeed = (-1) * (animationSpeed / speed);
+            if (speed == 0) animationSpeed = 1;
+            console.log(animationSpeed);
+        }
+
+        function playAnimation() {
+            setPlayMode();
+            if (pausedValues["functionKey"] == 10) {
+                selectionSort(pausedValues["i"], pausedValues["j"], pausedValues["min"]);
+            }
+            if (pausedValues["functionKey"] == 20) {
+                drawCanvasFooter(pausedValues["i"], pausedValues["j"], pausedValues["min"], pausedValues["textIndex"]);
+            }
+            if (pausedValues["functionKey"] == 30) {
+                drawCanvasFooter(pausedValues["i"], pausedValues["j"], pausedValues["min"], pausedValues["textIndex"]);
+            }
+
+        }
+
+        function pauseAnimation() {
+            setPausingMode();
+        }
+
+        function stopAnimation() {
+            clearTimeout(swapTimeout);
+            clearTimeout(bubbleSortTimeout);
+            clearTimeout(drawCanvasFooterTimeout);
+            // setPausingMode();
+            setStoppingMode();
+            setTimeout(function() {
+                canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+                rectangles = [];
+                originalRectangles = [];
+                // canvas;
+                // canvasContext;
+                x = 10;
+                rectangleWidth = 50;
+                spaceBetweenRectangle = 3;
+                rectanglesColor = '#8BBEE6FF';
+                highlightingColor = '#CDE2B8';
+                swapHappern = -1;
+                sorting = [];
+                validate = false;
+                checkIfComplete = false;
+                animationSpeed = 1;
+                pause = false;
+                stop = false;
+                pausedValues = {};
+                setCreateMode();
+            }, 5000);
+        }
+    </script>
+</head>
+
+<body>
+    <div class="jumbotron text-center w-100 p-3">
+        <div style="float: right;">
+            <img class="img-fluid" src="img/reset.png" id="resetButton" onclick="reset()" width="40" height="40">
+        </div>
+        <h1>Selection Sort</h1>
+    </div>
+    <div class="container-fluid">
+        <span class="badge badge-pill badge-info" id="pauseSpan"></span>
+        <div class="slidecontainer">
+            <font size="4"><b>Speed&nbsp;</b></font>
+            <font color="#8F8D8D" size="2">slow</font>
+            <input type="range" min="-5" max="5" value="1" class="slider" id="myRange" onclick='changeSpeed();'>
+            <font color="#8F8D8D" size="2">fast</font>
+        </div>
+        <br>
+        <br>
+        <center>
+            <div style="max-height: 600px;max-width: width window;overflow: scroll;">
+                <canvas id="myCanvas" width="1300px" height="450px" style="background-color: #fbfbfb69"></canvas>
+            </div>
+            <br>
+            <span class="invalidText" id="errorSpan"></span>
+            <input placeholder="Enter size of array ( value more than 1 )" class="form-control" type="text" id="createArrayTextField" style="border-radius: 50px;background-color: #f8f8f8;width: 500px; height:40px;font-size: 15pt;padding-left:15px;" oninput="checkSizeOfArrayOnInput()">
+            <input placeholder="Enter value of index 0" class="form-control" type="text" id="valueOfElementTextField" style="border-radius: 50px;background-color: #f8f8f8;width: 500px; height:40px;font-size: 15pt;padding-left:15px;" oninput="checkValueOfElementsOnInput()">
+            <button type="button" id='sortButton' class="btn btn-outline-secondary" onclick='SortElement();' style="width:100px;">Sort</button><br>
+            <h3><span class="badge badge-pill badge-success" id="statusSpan"></span></h3>
+            <img class="img-fluid more" src="img/play.png" id="playButton" onclick="playAnimation()" width="50" height="50" style="display: none;">
+            <img class="img-fluid more" src="img/pause.png" id="pauseButton" onclick="pauseAnimation()" width="50" height="50" style="display: none;">
+            <img class="img-fluid more" src="img/stop.png" id="stopButton" onclick="stopAnimation()" width="50" height="50" style="display: none;">
+        </center>
+
+    </div>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

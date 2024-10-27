@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variable and Data Type Visualizer</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .process-block {
+            padding: 20px;
+            border: 2px solid #ccc;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .process-info {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .variables-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .variable-box {
+            width: 300px;
+            padding: 20px;
+            border: 2px solid #ccc;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .variable-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .variable-name {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .variable-value {
+            font-size: 16px;
+            color: #4caf50;
+            margin-bottom: 12px;
+        }
+
+        .variable-type {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .memory-array {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .memory-block {
+            width: 20px;
+            height: 20px;
+            background-color: #4caf50;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+        }
+
+        button {
+            margin: 10px;
+            padding: 15px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.1);
+        }
+
+        .datatype-info {
+            padding: 20px;
+            border: 2px solid #ccc;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="process-block" id="process-block">
+        <div class="process-info" id="process-info"></div>
+    </div>
+
+    <div class="variables-container" id="variables-container"></div>
+
+    <div class="buttons-container">
+        <button onclick="declareVariable()">Declare Variable</button>
+    </div>
+
+    <div class="datatype-info" id="datatype-info">
+        <h2>Data Type Information</h2>
+        <p>Select a data type to view its information.</p>
+    </div>
+
+    <script>
+        let currentVariables = {};
+
+        function declareVariable() {
+            const variableName = prompt("Enter variable name:");
+            if (!variableName) return;
+
+            let variableValue = prompt("Enter variable value:");
+            if (!variableValue) return;
+
+            let variableType;
+            let variableSize;
+
+            try {
+                const parsedValue = JSON.parse(variableValue);
+
+                if (Number.isInteger(parsedValue)) {
+                    variableType = 'int';
+                } else if (typeof parsedValue === 'number') {
+                    if (Number.isInteger(parsedValue) || parsedValue % 1 !== 0) {
+                        variableType = 'float';
+                    } else {
+                        variableType = 'double';
+                    }
+                } else if (typeof parsedValue === 'string' && parsedValue.length === 1) {
+                    variableType = 'char';
+                } else if (typeof parsedValue === 'boolean') {
+                    variableType = 'boolean';
+                } else if (Number.isInteger(parsedValue) && parsedValue >= -32768 && parsedValue <= 32767) {
+                    variableType = 'short';
+                } else if (Number.isInteger(parsedValue) && parsedValue >= -9223372036854775808 && parsedValue <= 9223372036854775807) {
+                    variableType = 'long';
+                } else if (Number.isInteger(parsedValue) && parsedValue >= -128 && parsedValue <= 127) {
+                    variableType = 'byte';
+                } else if (typeof parsedValue === 'string') {
+                    variableType = 'string';
+                } else {
+                    variableType = 'unknown';
+                }
+
+                // Size calculation based on type (common conventions)
+                switch (variableType) {
+                    case 'int':
+                        variableSize = 4;
+                        break;
+                    case 'float':
+                        variableSize = 4;
+                        break;
+                    case 'double':
+                        variableSize = 8;
+                        break;
+                    case 'char':
+                        variableSize = 2; // Assuming two bytes for Unicode character
+                        break;
+                    case 'boolean':
+                        variableSize = 1; // Assuming one byte for true/false
+                        break;
+                    case 'short':
+                        variableSize = 2; // Assuming two bytes
+                        break;
+                    case 'long':
+                        variableSize = 8; // Assuming eight bytes
+                        break;
+                    case 'byte':
+                        variableSize = 1; // Assuming one byte
+                        break;
+                    case 'string':
+                        variableSize = parsedValue.length * 2; // Assuming two bytes per character (Unicode)
+                        break;
+                    default:
+                        variableSize = 0;
+                }
+            } catch (error) {
+                variableType = 'unknown';
+                variableSize = 0;
+            }
+
+            const processBlock = document.getElementById('process-block');
+            const processInfo = document.getElementById('process-info');
+
+            // Clear existing content
+            processInfo.innerHTML = '';
+
+            // Display information with a generative effect
+            displayInfoGeneratively([
+                `Data Type: ${variableType}`,
+                `Range: ${getRange(variableType)}`,
+                `Value: ${variableValue}`,
+                `Address: ${getAddress()}`
+            ], processInfo);
+
+            currentVariables[variableName] = {
+                value: variableValue,
+                type: variableType,
+                size: variableSize,
+            };
+
+            renderVariables();
+
+            // Display data type information
+            displayDataTypeInfo(variableType);
+        }
+
+        function displayInfoGeneratively(infoLines, container) {
+            const delay = 1000; // Adjust the delay as needed
+            let index = 0;
+
+            function displayNextLine() {
+                if (index < infoLines.length) {
+                    container.innerHTML += `<div>${infoLines[index]}</div>`;
+                    index++;
+                    setTimeout(displayNextLine, delay);
+                }
+            }
+
+            displayNextLine();
+        }
+
+        function renderVariables() {
+            const variablesContainer = document.getElementById('variables-container');
+            variablesContainer.innerHTML = '';
+
+            for (const variableName in currentVariables) {
+                const variable = currentVariables[variableName];
+
+                const variableBox = document.createElement('div');
+                variableBox.className = 'variable-box';
+
+                const variableNameElement = document.createElement('div');
+                variableNameElement.className = 'variable-name';
+                variableNameElement.textContent = variableName;
+
+                const variableValueElement = document.createElement('div');
+                variableValueElement.className = 'variable-value';
+                variableValueElement.textContent = `Value: ${variable.value}`;
+
+                const variableTypeElement = document.createElement('div');
+                variableTypeElement.className = 'variable-type';
+                variableTypeElement.textContent = `Type: ${variable.type}`;
+
+                const memoryArrayElement = document.createElement('div');
+                memoryArrayElement.className = 'memory-array';
+
+                for (let i = 0; i < variable.size; i++) {
+                    const memoryBlock = document.createElement('div');
+                    memoryBlock.className = 'memory-block';
+                    memoryBlock.textContent = i + 1;
+                    memoryArrayElement.appendChild(memoryBlock);
+                }
+
+                variableBox.appendChild(variableNameElement);
+                variableBox.appendChild(variableValueElement);
+                variableBox.appendChild(variableTypeElement);
+                variableBox.appendChild(memoryArrayElement);
+
+                variablesContainer.appendChild(variableBox);
+            }
+        }
+
+        function displayDataTypeInfo(type) {
+            const infoContainer = document.getElementById('datatype-info');
+            let dataTypeInfo = '';
+
+            switch (type) {
+                case 'int':
+                    dataTypeInfo = '<p>Integer data type represents whole numbers without any decimal points. Examples: 5, -10, 0.</p>';
+                    break;
+                case 'float':
+                    dataTypeInfo = '<p>Float data type represents numbers with decimal points. Examples: 3.14, -0.5, 10.0.</p>';
+                    break;
+                case 'double':
+                    dataTypeInfo = '<p>Double data type represents double-precision floating-point numbers. Examples: 3.14, -0.5, 10.0.</p>';
+                    break;
+                case 'char':
+                    dataTypeInfo = '<p>Char data type represents a single character. Examples: \'A\', \'b\', \'3\'.</p>';
+                    break;
+                case 'boolean':
+                    dataTypeInfo = '<p>Boolean data type represents true or false values. Examples: true, false.</p>';
+                    break;
+                case 'short':
+                    dataTypeInfo = '<p>Short data type represents integer values ranging from -32768 to 32767.</p>';
+                    break;
+                case 'long':
+                    dataTypeInfo = '<p>Long data type represents integer values ranging from -9223372036854775808 to 9223372036854775807.</p>';
+                    break;
+                case 'byte':
+                    dataTypeInfo = '<p>Byte data type represents integer values ranging from -128 to 127.</p>';
+                    break;
+                case 'string':
+                    dataTypeInfo = '<p>String data type represents a sequence of characters. Examples: "Hello", "123".</p>';
+                    break;
+                default:
+                    dataTypeInfo = '<p>Data type information not available.</p>';
+            }
+
+            infoContainer.innerHTML = `<h2>${type} Data Type Information</h2>${dataTypeInfo}`;
+        }
+
+        function getRange(type) {
+            switch (type) {
+                case 'int':
+                    return '-2147483648 to 2147483647';
+                case 'float':
+                    return '3.4E +/- 38 (7 digits)';
+                case 'double':
+                    return '1.7E +/- 308 (15 digits)';
+                case 'char':
+                    return '0 to 65535';
+                case 'boolean':
+                    return 'true or false';
+                case 'short':
+                    return '-32768 to 32767';
+                case 'long':
+                    return '-9223372036854775808 to 9223372036854775807';
+                case 'byte':
+                    return '-128 to 127';
+                case 'string':
+                    return 'Variable';
+                default:
+                    return 'Unknown Range';
+            }
+        }
+
+        function getAddress() {
+            // For simplicity, generating a random address.
+            const randomAddress = Math.floor(Math.random() * 10000) + 1000;
+            return `0x${randomAddress.toString(16).toUpperCase()}`;
+        }
+    </script>
+</body>
+
+</html>

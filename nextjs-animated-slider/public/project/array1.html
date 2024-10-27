@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Array Operations Visualizer</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color:gray;
+    }
+
+    #array-container {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      margin-top: 130px;
+      perspective: 800px; /* Perspective for 3D effect */
+      /* background-color: red;    */
+    }
+
+    .array-element {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 5px;
+      padding: 10px;
+      border: 1px solid black;
+      min-height: 50px;
+      background-color: #f0f8ff; /* Light blue background color */
+      transition: transform 0.5s ease-in-out, background-color 0.3s;
+      transform-origin: bottom center; /* Set transform origin for 3D effect */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+      opacity: 0;
+      animation: fadeIn 0.5s ease-out forwards, bounce 0.5s ease-in-out forwards;
+    }
+
+    .value {
+      font-size: 28px;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    .bar {
+      background-color: #4caf50; /* Green bar color */
+      width: 20px;
+      margin-top: 5px;
+      flex-grow: 0.02;
+      transition: height 0.05s;
+    }
+
+    .process-display {
+      margin-bottom: 10px;
+      height: 40px; /* Set fixed height for the process display box */
+      font-size: 28px;
+      color:aqua; /* Green text color */
+      opacity: 0;
+      transform: translateY(-20px);
+      animation: slideDown 0.05s ease-out forwards, fadeIn 0.5s ease-out forwards;
+    }
+
+    .operation-box {
+      width: 100%;
+      height: 150px; /* Set fixed height for the operation box */
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      border-radius: 5px;
+      overflow: auto;
+      /* color: blue; */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+      transition: scale 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+      transform: scale(2);
+      
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideDown {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-20px);
+      }
+      60% {
+        transform: translateY(-10px);
+      }
+    }
+
+    @keyframes rotate {
+      0% {
+        transform: rotateY(0deg);
+      }
+      25% {
+        transform: rotateY(180deg);
+      }
+      50% {
+        transform: rotateY(360deg);
+      }
+      75% {
+        transform: rotateY(540deg);
+      }
+      100% {
+        transform: rotateY(720deg);
+      }
+    }
+
+    /* New styles for input forms */
+    .hidden {
+      display: none;
+    }
+
+    #insert-form, #delete-form {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+
+    label {
+      margin-bottom: 5px;
+    }
+
+    input {
+      margin-bottom: 10px;
+      padding: 5px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="process-display">Array Visualization</div>
+  <div id="array-container"></div>
+  <div class="operation-box" id="operation-box"></div>
+  <div class="buttons-container">
+    <button onclick="generateNewArray()">Generate New Array</button>
+    <button onclick="filterEvenNumbers()">Filter Even Numbers</button>
+    
+    <button onclick="calculateSum()">Calculate Sum</button>
+    <button onclick="traverseArray()">Traverse Array</button>
+    <button onclick="reverseArray()">Reverse Array</button>
+    <button onclick="findMaxElement()">Find Max Element</button>
+    <button onclick="findMinElement()">Find Min Element</button>
+    <button onclick="clearArray()">Clear Array</button>
+  </div>
+
+  <div id="insert-form" class="hidden">
+    
+    <label for="insert-index">Index:</label>
+    <input type="number" id="insert-index" min="0" step="1">
+    <label for="insert-value">Value:</label>
+    <input type="number" id="insert-value" min="0" step="1">
+    <button onclick="insertElement()">Insert</button>
+  </div>
+
+  <div id="delete-form" class="hidden">
+    <label for="delete-index">Index:</label>
+    <input type="number" id="delete-index" min="0" step="1">
+    <button onclick="deleteElement()">Delete</button>
+  </div>
+
+  <script>
+    let currentArray = [];
+
+    function generateRandomArray(length, min, max) {
+      return Array.from({ length }, () => Math.floor(Math.random() * (max - min + 1)) + min);
+    }
+
+    function renderArray(array) {
+      const arrayContainer = document.getElementById('array-container');
+      arrayContainer.innerHTML = '';
+
+      array.forEach((value, index) => {
+        const arrayElement = document.createElement('div');
+        arrayElement.className = 'array-element';
+
+        const valueElement = document.createElement('span');
+        valueElement.className = 'value';
+        valueElement.textContent = value;
+
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        bar.style.height = `${value}px`;
+
+        arrayElement.appendChild(valueElement);
+        // arrayElement.appendChild(bar);
+
+        arrayContainer.appendChild(arrayElement);
+      });
+
+      animateArrayElements();
+    }
+
+    function animateArrayElements() {
+      const arrayElements = document.querySelectorAll('.array-element');
+      arrayElements.forEach((element, index) => {
+        element.style.animationDelay = `${index * 0.1}s`;
+      });
+    }
+
+    function generateNewArray() {
+      currentArray = generateRandomArray(10, 10, 100);
+      renderArray(currentArray);
+      updateProcessDisplay('New Array Generated');
+    }
+
+    async function bubbleSort() {
+      disableButtons();
+      updateProcessDisplay('Sorting: Bubble Sort');
+      for (let i = 0; i < currentArray.length; i++) {
+        for (let j = 0; j < currentArray.length - i - 1; j++) {
+          if (currentArray[j] > currentArray[j + 1]) {
+            await swapElements(j, j + 1);
+          }
+        }
+      }
+      updateProcessDisplay('Sorting Complete');
+      enableButtons();
+    }
+
+    function swapElements(index1, index2) {
+      return new Promise(resolve => {
+        const arrayContainer = document.getElementById('array-container');
+        const elements = Array.from(arrayContainer.children);
+
+        elements[index1].style.animation = 'rotate 1s ease-in-out forwards'; // Rotate element
+        elements[index2].style.animation = 'rotate 1s ease-in-out forwards';
+
+        setTimeout(() => {
+          const tempHTML = elements[index1].innerHTML;
+          elements[index1].innerHTML = elements[index2].innerHTML;
+          elements[index2].innerHTML = tempHTML;
+
+          elements[index1].style.animation = 'none'; // Reset animation
+          elements[index2].style.animation = 'none';
+
+          updateOperationBox(`Swapped elements at indices ${index1} and ${index2}`);
+          resolve();
+        }, 1000);
+      });
+    }
+
+    function filterEvenNumbers() {
+      disableButtons();
+      updateProcessDisplay('Filtering: Even Numbers');
+      const newArray = currentArray.filter(num => num % 2 === 0);
+      renderArray(newArray);
+      updateProcessDisplay('Filtering Complete');
+      enableButtons();
+    }
+
+    function mapSquareNumbers() {
+      disableButtons();
+      updateProcessDisplay('Mapping: Squares');
+      const newArray = currentArray.map(num => num * num);
+      renderArray(newArray);
+      updateProcessDisplay('Mapping Complete');
+      enableButtons();
+    }
+
+    function calculateSum() {
+      disableButtons();
+      updateProcessDisplay('Calculating: Sum');
+      const sum = currentArray.reduce((accumulator, current) => accumulator + current, 0);
+      updateOperationBox(`Sum of the array elements: ${sum}`);
+      updateProcessDisplay('Calculation Complete');
+      enableButtons();
+    }
+
+    function showInsertForm() {
+      hideForms();
+      const insertForm = document.getElementById('insert-form');
+      insertForm.classList.remove('hidden');
+    }
+
+    function showDeleteForm() {
+      hideForms();
+      const deleteForm = document.getElementById('delete-form');
+      deleteForm.classList.remove('hidden');
+    }
+
+    function hideForms() {
+      const insertForm = document.getElementById('insert-form');
+      const deleteForm = document.getElementById('delete-form');
+      insertForm.classList.add('hidden');
+      deleteForm.classList.add('hidden');
+    }
+
+    function insertElement() {
+      hideForms();
+      const indexInput = document.getElementById('insert-index');
+      const valueInput = document.getElementById('insert-value');
+
+      const index = parseInt(indexInput.value);
+      const value = parseInt(valueInput.value);
+
+      if (!isNaN(index) && !isNaN(value) && index >= 0 && index <= currentArray.length) {
+        currentArray.splice(index, 0, value);
+        renderArray(currentArray);
+        updateOperationBox(`Element Inserted at Index ${index}`);
+      }
+
+      enableButtons();
+    }
+
+    function deleteElement() {
+      hideForms();
+      const indexInput = document.getElementById('delete-index');
+      const index = parseInt(indexInput.value);
+
+      if (!isNaN(index) && index >= 0 && index < currentArray.length) {
+        currentArray.splice(index, 1);
+        renderArray(currentArray);
+        updateOperationBox(`Element Deleted at Index ${index}`);
+      }
+
+      enableButtons();
+    }
+
+    function traverseArray() {
+      disableButtons();
+      const arrayString = `Array Elements: ${currentArray.join(', ')}`;
+      updateOperationBox(arrayString);
+      updateProcessDisplay('Array Traversed');
+      enableButtons();
+    }
+
+    function reverseArray() {
+      disableButtons();
+      updateProcessDisplay('Reversing Array');
+      currentArray.reverse();
+      renderArray(currentArray);
+      updateOperationBox('Array Reversed');
+      enableButtons();
+    }
+
+    function findMaxElement() {
+      disableButtons();
+      updateProcessDisplay('Finding Max Element');
+      const maxElement = Math.max(...currentArray);
+      updateOperationBox(`Max Element: ${maxElement}`);
+      enableButtons();
+    }
+
+    function findMinElement() {
+      disableButtons();
+      updateProcessDisplay('Finding Min Element');
+      const minElement = Math.min(...currentArray);
+      updateOperationBox(`Min Element: ${minElement}`);
+      enableButtons();
+    }
+
+    function clearArray() {
+      disableButtons();
+      updateProcessDisplay('Clearing Array');
+      currentArray = [];
+      renderArray(currentArray);
+      updateOperationBox('Array Cleared');
+      enableButtons();
+    }
+
+    function updateProcessDisplay(message) {
+      const processDisplay = document.querySelector('.process-display');
+      processDisplay.textContent = message;
+    }
+
+    function updateOperationBox(message) {
+      const operationBox = document.getElementById('operation-box');
+      const newMessage = document.createElement('div');
+      newMessage.textContent = message;
+      operationBox.appendChild(newMessage);
+      operationBox.scrollTop = operationBox.scrollHeight;
+    }
+
+    function disableButtons() {
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(button => {
+        button.disabled = true;
+      });
+    }
+
+    function enableButtons() {
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(button => {
+        button.disabled = false;
+      });
+    }
+
+    generateNewArray();
+  </script>
+</body>
+</html>
