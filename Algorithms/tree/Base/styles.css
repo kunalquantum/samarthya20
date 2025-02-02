@@ -1,0 +1,119 @@
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+header {
+    text-align: center;
+    background-color: #6200ea;
+    color: #fff;
+    padding: 1rem;
+}
+
+h1 {
+    margin: 0;
+}
+
+main {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Styling */
+section {
+    margin-bottom: 2rem;
+}
+
+#input-section, #pseudocode-section, #controls-section {
+    text-align: center;
+}
+
+#visualization-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+    overflow-x: auto;
+    position: relative;
+    padding: 20px;
+}
+
+/* Pseudocode Styling */
+#pseudocode {
+    background: #f7f7f9;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    color: #333;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 14px;
+    text-align: left;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Tree Node Styling */
+.node {
+    display: inline-block;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: #6200ea;
+    color: #fff;
+    font-weight: bold;
+    transition: transform 0.5s ease, background-color 0.5s ease;
+}
+
+.node.highlight {
+    background-color: #ff5722;
+}
+
+#visualization-section {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    min-height: 300px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+    padding: 20px;
+    overflow-x: auto;
+}
+
+/* Tree Node Styling */
+.node {
+    display: inline-block;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: #6200ea;
+    color: #fff;
+    font-weight: bold;
+    transition: transform 0.5s ease, background-color 0.5s ease;
+}
+
+.connector {
+    position: absolute;
+    width: 2px;
+    background-color: #333;
+    transform-origin: top;
+    z-index: 0;
+}

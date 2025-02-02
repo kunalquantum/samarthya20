@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimum Platforms Required</title>
+  <style>
+    .train {
+      display: inline-block;
+      width: 30px;
+      height: 40px;
+      margin: 5px;
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      vertical-align: bottom;
+      font-size: 12px;
+      padding-top: 10px;
+      transition: transform 0.5s ease, background-color 0.5s ease;
+    }
+
+    .train.selected {
+      background-color: #FF6347;
+      transform: scale(1.2);
+    }
+
+    .train.leaving {
+      background-color: #FFD700;
+    }
+
+    #train-container {
+      margin-top: 20px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    #pseudocode {
+      margin-top: 20px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      padding: 10px;
+      background-color: #f4f4f4;
+      border: 1px solid #ccc;
+    }
+
+    .step-box {
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      display: inline-block;
+      min-width: 100px;
+    }
+
+    .highlight {
+      background-color: #FFFF00;
+      padding: 5px;
+    }
+
+    .fade-in {
+      animation: fadeIn 2s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Minimum Platforms Required Visualization</h1>
+  <input id="arrival-input" type="text" placeholder="Enter arrival times (comma separated)" />
+  <input id="departure-input" type="text" placeholder="Enter departure times (comma separated)" />
+  <button id="start-visualization">Start Visualization</button>
+  
+  <div id="train-container"></div>
+  <div id="pseudocode"></div>
+  <div id="result"></div>
+
+  <script>
+    let arrivalTimes = [];
+    let departureTimes = [];
+    let delay = 1500;
+
+    const trainContainer = document.getElementById("train-container");
+    const pseudocodeDisplay = document.getElementById("pseudocode");
+    const resultDisplay = document.getElementById("result");
+
+    const resetVisualization = () => {
+      trainContainer.innerHTML = "";
+      resultDisplay.textContent = "";
+      pseudocodeDisplay.textContent = "";
+    };
+
+    const visualizeTrains = (arrivals, departures) => {
+      resetVisualization();
+      arrivals.forEach((time, index) => {
+        const train = document.createElement("div");
+        train.className = "train";
+        train.textContent = time;
+        train.id = `train-${index}`;
+        trainContainer.appendChild(train);
+      });
+    };
+
+    const highlightElement = (index, className) => {
+      const train = document.querySelector(`#train-${index}`);
+      train.classList.add(className);
+    };
+
+    const updatePseudocode = (step) => {
+      const pseudocodeSteps = [
+        "1. Sort the arrival and departure times.",
+        "2. Initialize current platforms = 0 and max platforms = 0.",
+        "3. Traverse the sorted arrival and departure times.",
+        "4. If arrival[i] <= departure[j], increment current platforms.",
+        "5. If current platforms > max platforms, update max platforms.",
+        "6. Return the max platforms required."
+      ];
+      pseudocodeDisplay.textContent = pseudocodeSteps[step];
+    };
+
+    const animateStep = (step, i) => {
+      updatePseudocode(step);
+      highlightElement(i, "selected");
+    };
+
+    const findMinimumPlatforms = async () => {
+      const sortedArrivals = arrivalTimes.slice().sort((a, b) => a - b);
+      const sortedDepartures = departureTimes.slice().sort((a, b) => a - b);
+      
+      let platforms = 0, maxPlatforms = 0;
+      let i = 0, j = 0;
+
+      // Step 1: Sort the times and initialize counters
+      await new Promise(resolve => {
+        setTimeout(() => {
+          updatePseudocode(0);
+          resolve();
+        }, delay);
+      });
+
+      // Step 2: Traverse through arrival and departure times
+      while (i < sortedArrivals.length) {
+        if (sortedArrivals[i] <= sortedDepartures[j]) {
+          // New arrival
+          platforms++;
+          if (platforms > maxPlatforms) {
+            maxPlatforms = platforms;
+          }
+          animateStep(3, i);
+          await new Promise(resolve => setTimeout(resolve, delay));
+
+          // Step 3: Update platform count
+          i++;
+        } else {
+          // A train is leaving
+          platforms--;
+          highlightElement(j, "leaving");
+          animateStep(4, j);
+          await new Promise(resolve => setTimeout(resolve, delay));
+
+          j++;
+        }
+      }
+
+      // Step 4: Final result
+      resultDisplay.textContent = `Minimum platforms required: ${maxPlatforms}`;
+    };
+
+    const startVisualization = () => {
+      const arrivalInput = document.getElementById("arrival-input").value;
+      const departureInput = document.getElementById("departure-input").value;
+
+      arrivalTimes = arrivalInput.split(",").map(Number);
+      departureTimes = departureInput.split(",").map(Number);
+
+      visualizeTrains(arrivalTimes, departureTimes);
+
+      // Start the algorithm visualization
+      findMinimumPlatforms();
+    };
+
+    document.getElementById("start-visualization").addEventListener("click", startVisualization);
+  </script>
+</body>
+</html>

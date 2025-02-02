@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Find the Missing Number</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Find the Missing Number (Advanced)</h1>
+
+  <div id="input-container">
+    <label for="array-input">Enter Array (comma-separated, 1 to n):</label>
+    <input type="text" id="array-input" placeholder="e.g., 1, 2, 4, 5">
+    <button id="start-visualization">Start Visualization</button>
+  </div>
+
+  <div id="array-container"></div>
+
+  <!-- Calculation boxes to display intermediate steps -->
+  <div id="calculation-boxes">
+    <div id="expected-sum-box" class="calculation-box">
+      <strong>Step 1: Calculate Expected Sum</strong>
+      <p>Formula: <span id="expected-sum-formula">n * (n + 1) / 2</span></p>
+      <p id="expected-sum-result">Expected Sum: -</p>
+    </div>
+    
+    <div id="actual-sum-box" class="calculation-box">
+      <strong>Step 2: Calculate Actual Sum</strong>
+      <p>Actual Sum: <span id="actual-sum-value">-</span></p>
+    </div>
+
+    <div id="missing-number-box" class="calculation-box">
+      <strong>Step 3: Calculate Missing Number</strong>
+      <p>Missing Number: <span id="missing-number-value">-</span></p>
+    </div>
+
+    <div id="xor-calculation-box" class="calculation-box">
+      <strong>Step 4: XOR Calculation</strong>
+      <p id="xor-detail">-</p>
+    </div>
+  </div>
+
+  <div id="feedback">
+    <h2>Results:</h2>
+    <p><strong>Sum Method:</strong> Missing Number = <span id="sum-method-result">-</span></p>
+    <p><strong>XOR Method:</strong> Missing Number = <span id="xor-method-result">-</span></p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

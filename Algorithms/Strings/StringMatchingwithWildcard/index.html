@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String Matching with Wildcard Visualization</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>String Matching with Wildcard</h1>
+        <div class="input-section">
+            <input type="text" id="string" placeholder="Enter string" />
+            <input type="text" id="pattern" placeholder="Enter pattern" />
+            <button id="startBtn">Start</button>
+        </div>
+        <div class="pseudocode-section">
+            <pre id="pseudocode"></pre>
+        </div>
+        <div class="visualization-section">
+            <div id="stringDisplay"></div>
+            <div id="patternDisplay"></div>
+        </div>
+        <div>
+            <button id="prevBtn">Prev</button>
+            <button id="nextBtn">Next</button>
+            <button id="completeBtn">Complete</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

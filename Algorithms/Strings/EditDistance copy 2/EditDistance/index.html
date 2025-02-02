@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trapping Rain Water Visualization</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Trapping Rain Water</h1>
+
+  <div id="input-container">
+    <label for="array-input">Enter Heights (comma-separated):</label>
+    <input type="text" id="array-input" placeholder="e.g., 0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1">
+    <button id="start-visualization">Start Visualization</button>
+  </div>
+
+  <div id="array-container"></div>
+
+  <!-- Calculation boxes to display intermediate steps -->
+  <div id="calculation-boxes">
+    <div id="left-max-box" class="calculation-box">
+      <strong>Step 1: Track Left Max</strong>
+      <p id="left-max">Left Max: -</p>
+    </div>
+    
+    <div id="right-max-box" class="calculation-box">
+      <strong>Step 2: Track Right Max</strong>
+      <p id="right-max">Right Max: -</p>
+    </div>
+
+    <div id="water-trapped-box" class="calculation-box">
+      <strong>Step 3: Calculate Water Trapped</strong>
+      <p id="water-trapped">Water Trapped: -</p>
+    </div>
+  </div>
+
+  <div id="feedback">
+    <h2>Result:</h2>
+    <p><strong>Total Water Trapped:</strong> <span id="total-water-trapped">-</span></p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

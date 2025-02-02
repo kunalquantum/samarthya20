@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KMP Algorithm Visualization</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #text-container, #pattern-container {
+      margin-top: 20px;
+      font-size: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .char-box {
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      border-radius: 5px;
+      font-size: 18px;
+    }
+    .highlight {
+      background-color: lightblue;
+      font-size: 1.2em;
+    }
+    .lps-box {
+      padding: 10px;
+      background-color: #f44336;
+      color: white;
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      border-radius: 5px;
+      font-size: 18px;
+    }
+    #lps-container {
+      margin-top: 30px;
+    }
+    #pseudocode {
+      font-family: monospace;
+      padding: 10px;
+      background-color: #f4f4f4;
+      width: 400px;
+      margin-top: 30px;
+      display: inline-block;
+      white-space: pre-wrap;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>KMP Algorithm Visualization</h1>
+  <input id="text-input" type="text" placeholder="Enter text" />
+  <input id="pattern-input" type="text" placeholder="Enter pattern" />
+  <button id="start">Start Search</button>
+
+  <div id="text-container"></div>
+  <div id="pattern-container"></div>
+  <div id="lps-container"></div>
+  <div id="pseudocode"></div>
+  <div id="result"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

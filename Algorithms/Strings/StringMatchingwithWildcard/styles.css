@@ -1,0 +1,93 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #f4f4f4;
+  padding: 20px;
+}
+
+.container {
+  width: 80%;
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+}
+
+.input-section, .pseudocode-section, .visualization-section {
+  margin: 20px 0;
+}
+
+input {
+  padding: 10px;
+  width: 200px;
+  margin: 10px 0;
+}
+
+button {
+  padding: 10px 20px;
+  cursor: pointer;
+  margin: 10px 5px;
+}
+
+#visualization {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+#stringDisplay, #patternDisplay {
+  font-size: 18px;
+  padding: 5px;
+  margin: 0;
+  transition: all 0.3s ease-in-out;
+}
+
+.match {
+  background-color: lightgreen;
+  color: green;
+  font-weight: bold;
+  transform: scale(1.1);
+}
+
+.mismatch {
+  background-color: lightcoral;
+  color: red;
+  font-weight: bold;
+  transform: scale(1.1);
+}
+
+.wildcard {
+  background-color: lightyellow;
+  color: #9c7b3d;
+  font-weight: bold;
+}
+
+.backtrack {
+  background-color: #ffeb3b;
+  color: #795548;
+  font-weight: bold;
+}
+
+#pseudocode {
+  font-family: 'Courier New', monospace;
+  background-color: #f0f0f0;
+  padding: 10px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+button:focus, input:focus {
+  outline: none;
+}
+
+button, input {
+  transition: background-color 0.3s ease;
+}
+
+button:hover, input:hover {
+  background-color: #dcdcdc;
+}

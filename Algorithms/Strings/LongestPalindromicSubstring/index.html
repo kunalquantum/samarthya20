@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Palindromic Substring</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #array-container {
+            margin-top: 20px;
+            position: relative;
+            width: 600px;
+            height: 100px;
+            margin-bottom: 50px;
+        }
+        .element {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            vertical-align: bottom;
+            transition: all 1s ease-in-out;
+        }
+        .highlight {
+            background-color: lightblue;
+            font-size: 1.4em;
+            transform: scale(1.3);
+        }
+        .current {
+            background-color: lightcoral;
+            font-size: 1.4em;
+            transform: scale(1.3);
+        }
+        #pseudocode {
+            font-family: monospace;
+            white-space: pre-wrap;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            width: 400px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Longest Palindromic Substring</h1>
+    <input id="array-input" type="text" placeholder="Enter string" />
+    <button id="start-finding">Find Longest Palindrome</button>
+
+    <div id="array-container"></div>
+    <div id="pseudocode"></div>
+    <div id="result"></div>
+
+    <script>
+        let str = "";
+        const arrayContainer = document.getElementById("array-container");
+        const pseudocodeDisplay = document.getElementById("pseudocode");
+        const resultDisplay = document.getElementById("result");
+        const delay = 1000;  // Animation delay
+
+        const resetVisualization = () => {
+            arrayContainer.innerHTML = "";
+            resultDisplay.textContent = "";
+            pseudocodeDisplay.textContent = "";
+        };
+
+        const visualizeArray = (arr, highlightIndex = null, currentIndex = null) => {
+            resetVisualization();
+            arr.forEach((el, index) => {
+                const elementDiv = document.createElement("div");
+                elementDiv.className = "element";
+                elementDiv.textContent = el;
+                if (highlightIndex === index) {
+                    elementDiv.classList.add("highlight");
+                }
+                if (currentIndex === index) {
+                    elementDiv.classList.add("current");
+                }
+                arrayContainer.appendChild(elementDiv);
+            });
+        };
+
+        const updatePseudocode = (step) => {
+            const pseudocodeSteps = [
+                "1. Initialize start = 0, end = 0.",
+                "2. For each character, expand around the center (both single and adjacent characters).",
+                "3. If a longer palindrome is found, update the start and end indices.",
+                "4. Return the substring from the start to the end indices as the longest palindrome."
+            ];
+
+            pseudocodeDisplay.innerHTML = pseudocodeSteps
+                .map((line, index) => {
+                    if (index === step) {
+                        return `<div class="highlight">${line}</div>`;
+                    } else {
+                        return `<div>${line}</div>`;
+                    }
+                })
+                .join("");
+        };
+
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        const findLongestPalindrome = async (s) => {
+            const n = s.length;
+            if (n === 0) return "";
+
+            let start = 0;
+            let end = 0;
+
+            updatePseudocode(0);  // Initial pseudocode step
+            await sleep(delay);
+
+            for (let i = 0; i < n; i++) {
+                updatePseudocode(1);  // Expanding around center
+                visualizeArray(s.split(''), i);
+                await sleep(delay);
+
+                // Expand around the center for odd-length palindromes
+                const len1 = expandAroundCenter(s, i, i);
+                // Expand around the center for even-length palindromes
+                const len2 = expandAroundCenter(s, i, i + 1);
+                const len = Math.max(len1, len2);
+
+                if (len > end - start) {
+                    start = i - Math.floor((len - 1) / 2);
+                    end = i + Math.floor(len / 2);
+                }
+
+                visualizeArray(s.split(''), start, end);  // Highlight current palindrome
+                await sleep(delay);
+            }
+
+            resultDisplay.textContent = `Longest Palindrome: ${s.substring(start, end + 1)}`;
+            updatePseudocode(3);  // Final step
+        };
+
+        const expandAroundCenter = (s, left, right) => {
+            while (left >= 0 && right < s.length && s[left] === s[right]) {
+                left--;
+                right++;
+            }
+            return right - left - 1;
+        };
+
+        const startFinding = () => {
+            const arrayInput = document.getElementById("array-input").value;
+            str = arrayInput;
+
+            visualizeArray(str.split(''));
+            findLongestPalindrome(str);
+        };
+
+        document.getElementById("start-finding").addEventListener("click", startFinding);
+    </script>
+</body>
+</html>

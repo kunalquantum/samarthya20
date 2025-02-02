@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Maximum Subarray Sum</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <h1>Maximum Subarray Sum Visualization</h1>
+
+  <div id="input-container">
+    <label for="array-input">Enter Array (comma-separated):</label>
+    <input type="text" id="array-input" placeholder="e.g., 1, -2, 3, 5, -1, 2">
+    <button id="start-visualization">Start Visualization</button>
+  </div>
+
+  <div id="array-container"></div>
+
+  <div id="feedback">
+    <p><strong>Current Element:</strong> <span id="current-element">-</span></p>
+    <p><strong>Current Max:</strong> <span id="current-max">-</span></p>
+    <p><strong>Max So Far:</strong> <span id="max-so-far">-</span></p>
+    <p><strong>Current Subarray Indices:</strong> <span id="subarray-indices">-</span></p>
+  </div>
+
+  <div id="controls">
+    <button id="prev-step">Previous Step</button>
+    <button id="next-step">Next Step</button>
+    <button id="reset">Reset</button>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>

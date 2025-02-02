@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Distance Visualization</title>
+    <style>
+        .matrix {
+            display: grid;
+            grid-template-columns: repeat(8, 80px);
+            grid-gap: 5px;
+            margin-top: 20px;
+        }
+
+        .cell {
+            width: 80px;
+            height: 80px;
+            border: 1px solid #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            background-color: #fff;
+        }
+
+        .cell.highlight {
+            background-color: #ffeb3b;
+        }
+
+        .cell.insert {
+            background-color: #c8e6c9;
+        }
+
+        .cell.delete {
+            background-color: #ffcdd2;
+        }
+
+        .cell.substitute {
+            background-color: #ffcc80;
+        }
+
+        #controls {
+            margin-top: 20px;
+        }
+
+        #description {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        #finalOutput {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #color-legend {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        #color-legend span {
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Distance Visualization</h1>
+    
+    <div>
+        <label for="input1">String 1: </label>
+        <input type="text" id="input1" value="kitten">
+        <label for="input2">String 2: </label>
+        <input type="text" id="input2" value="sitting">
+    </div>
+
+    <div class="matrix" id="matrix"></div>
+    <div id="controls">
+        <button id="startButton">Start</button>
+        <button id="nextButton" disabled>Next</button>
+        <button id="prevButton" disabled>Prev</button>
+    </div>
+
+    <div id="description"></div>
+    <div id="finalOutput"></div>
+
+    <div id="color-legend">
+        <span style="background-color: #ffeb3b; padding: 5px;">Yellow: Highlighted (Current Step)</span>
+        <span style="background-color: #c8e6c9; padding: 5px;">Green: Insert</span>
+        <span style="background-color: #ffcdd2; padding: 5px;">Red: Delete</span>
+        <span style="background-color: #ffcc80; padding: 5px;">Orange: Substitute</span>
+    </div>
+
+    <script>
+        let strings = [];
+        let matrix = [];
+        let steps = [];
+        let currentStep = 0;
+        let stepDelay = 1000; // Delay time for each step in milliseconds
+
+        // Initialize strings and matrix
+        function initialize() {
+            strings[0] = document.getElementById("input1").value;
+            strings[1] = document.getElementById("input2").value;
+            let rows = strings[0].length + 1;
+            let cols = strings[1].length + 1;
+
+            // Initialize the matrix with zeros
+            matrix = Array.from({ length: rows }, () => Array(cols).fill(0));
+
+            // Fill the first row and column with incremental values
+            for (let i = 0; i < rows; i++) {
+                matrix[i][0] = i;
+            }
+            for (let j = 0; j < cols; j++) {
+                matrix[0][j] = j;
+            }
+            steps = [];
+        }
+
+        // Update matrix based on the current step
+        function updateMatrix(i, j) {
+            let operation = '';
+            let cost = 0;
+
+            if (strings[0][i - 1] === strings[1][j - 1]) {
+                matrix[i][j] = matrix[i - 1][j - 1]; // No operation needed
+                operation = 'No operation';
+            } else {
+                let deleteCost = matrix[i - 1][j] + 1;
+                let insertCost = matrix[i][j - 1] + 1;
+                let substituteCost = matrix[i - 1][j - 1] + 1;
+
+                // Find minimum cost among delete, insert, and substitute
+                let minCost = Math.min(deleteCost, insertCost, substituteCost);
+
+                matrix[i][j] = minCost;
+
+                if (minCost === deleteCost) {
+                    operation = 'Delete';
+                } else if (minCost === insertCost) {
+                    operation = 'Insert';
+                } else {
+                    operation = 'Substitute';
+                }
+            }
+
+            // Store the step to show later
+            steps.push({ i, j, operation });
+        }
+
+        // Render the matrix
+        function renderMatrix() {
+            let matrixContainer = document.getElementById("matrix");
+            matrixContainer.innerHTML = '';
+
+            let rows = matrix.length;
+            let cols = matrix[0].length;
+
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    let cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.id = `cell-${i}-${j}`;
+                    cell.innerText = matrix[i][j];
+                    matrixContainer.appendChild(cell);
+                }
+            }
+        }
+
+        // Highlight a specific cell
+        function highlightCell(i, j, operation) {
+            let cell = document.getElementById(`cell-${i}-${j}`);
+            cell.classList.add('highlight');
+            if (operation === 'Delete') cell.classList.add('delete');
+            if (operation === 'Insert') cell.classList.add('insert');
+            if (operation === 'Substitute') cell.classList.add('substitute');
+        }
+
+        // Show step description
+        function showStepDescription() {
+            let step = steps[currentStep];
+            let description = `Step ${currentStep + 1}: 
+                Operation: ${step.operation} at position (${step.i}, ${step.j})`;
+            document.getElementById('description').innerText = description;
+        }
+
+        // Show final output
+        function showFinalOutput() {
+            let finalOutput = `The minimum number of operations to convert '${strings[0]}' to '${strings[1]}' is ${matrix[strings[0].length][strings[1].length]}`;
+            document.getElementById('finalOutput').innerText = finalOutput;
+        }
+
+        // Automatically process and visualize steps with a delay
+        function processSteps() {
+            if (currentStep < steps.length) {
+                let step = steps[currentStep];
+                highlightCell(step.i, step.j, step.operation);
+                showStepDescription();
+                currentStep++;
+
+                setTimeout(processSteps, stepDelay); // Continue after a delay
+            } else {
+                showFinalOutput(); // Show final output after all steps are processed
+            }
+        }
+
+        // Initialize matrix and steps when "Start" is clicked
+        document.getElementById('startButton').addEventListener('click', function() {
+            initialize();
+            renderMatrix();
+            for (let i = 1; i < matrix.length; i++) {
+                for (let j = 1; j < matrix[0].length; j++) {
+                    updateMatrix(i, j);
+                }
+            }
+            currentStep = 0;
+            showStepDescription();
+            highlightCell(0, 0, 'No operation');
+            processSteps(); // Start processing steps automatically
+        });
+    </script>
+</body>
+</html>

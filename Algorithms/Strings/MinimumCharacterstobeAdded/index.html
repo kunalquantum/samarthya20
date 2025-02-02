@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Palindrome Formation Visualization</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #string-container {
+      margin-top: 20px;
+      position: relative;
+      width: 350px;
+      height: 100px;
+      margin-bottom: 50px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .element {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 20px;
+      text-align: center;
+      vertical-align: middle;
+      border-radius: 5px;
+      transition: transform 1s ease-in-out, opacity 1s ease, box-shadow 0.5s ease-in-out;
+      position: relative;
+    }
+    .highlight {
+      background-color: lightblue;
+      font-size: 1.2em;
+    }
+    .add-char {
+      background-color: #f44336;
+      font-size: 1.5em;
+      animation: bounce 1s ease-out;
+    }
+    #pseudocode {
+      font-family: monospace;
+      white-space: pre-wrap;
+      padding: 10px;
+      background-color: #f4f4f4;
+      border: 1px solid #ccc;
+      width: 300px;
+      display: inline-block;
+      margin-top: 20px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    @keyframes bounce {
+      0% {
+        transform: scale(1);
+      }
+      25% {
+        transform: scale(1.1);
+      }
+      50% {
+        transform: scale(0.9);
+      }
+      75% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    button:disabled {
+      background-color: lightgray;
+      cursor: not-allowed;
+    }
+    .highlight-text {
+      background-color: lightblue;
+    }
+  </style>
+</head>
+<body>
+  <h1>Minimum Characters to Add for Palindrome</h1>
+  <input id="input-string" type="text" placeholder="Enter string" />
+  <button id="start">Start</button>
+
+  <div id="string-container"></div>
+  <div id="pseudocode"></div>
+  <div id="result"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

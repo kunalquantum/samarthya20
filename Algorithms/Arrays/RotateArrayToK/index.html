@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Array Rotation Animation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #array-container {
+      margin-top: 20px;
+      position: relative;
+      width: 350px;
+      height: 100px;
+      margin-bottom: 50px;
+    }
+    .element {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      margin: 5px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 20px;
+      text-align: center;
+      vertical-align: bottom;
+      transition: transform 1s ease-in-out, opacity 1s ease;
+    }
+    #pseudocode {
+      font-family: monospace;
+      white-space: pre-wrap;
+      padding: 10px;
+      background-color: #f4f4f4;
+      border: 1px solid #ccc;
+      width: 300px;
+      display: inline-block;
+      margin-top: 20px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .rotating {
+      transform: translateX(100px);
+      opacity: 0.5;
+    }
+    .highlight {
+      background-color: lightblue;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Array Rotation Animation</h1>
+  <input id="array-input" type="text" placeholder="Enter array (comma separated)" />
+  <input id="k-input" type="number" placeholder="Enter k" />
+  <button id="start-rotation">Start Rotation</button>
+
+  <div id="array-container"></div>
+  <div id="pseudocode"></div>
+  <div id="result"></div>
+
+  <script>
+    let array = [];
+    let k = 0;
+    const arrayContainer = document.getElementById("array-container");
+    const pseudocodeDisplay = document.getElementById("pseudocode");
+    const resultDisplay = document.getElementById("result");
+    const delay = 1500;
+
+    const resetVisualization = () => {
+      arrayContainer.innerHTML = "";
+      resultDisplay.textContent = "";
+      pseudocodeDisplay.textContent = "";
+    };
+
+    const visualizeArray = (arr) => {
+      resetVisualization();
+      arr.forEach((el, index) => {
+        const elementDiv = document.createElement("div");
+        elementDiv.className = "element";
+        elementDiv.textContent = el;
+        elementDiv.id = `element-${index}`;
+        arrayContainer.appendChild(elementDiv);
+      });
+    };
+
+    const updatePseudocode = (step) => {
+      const pseudocodeSteps = [
+        "1. Initialize the array and k.",
+        "2. Calculate the effective rotation: k = k % arr.length.",
+        "3. Rotate the array by shifting each element by k steps.",
+        "4. Display the rotated array.",
+      ];
+
+      // Clear the pseudocode text and update with highlighted step
+      pseudocodeDisplay.innerHTML = pseudocodeSteps
+        .map((line, index) => {
+          if (index === step) {
+            return `<div class="highlight">${line}</div>`; // Highlight the ongoing step
+          } else {
+            return `<div>${line}</div>`; // Other steps remain normal
+          }
+        })
+        .join("");
+    };
+
+    const animateStep = (step) => {
+      updatePseudocode(step);
+    };
+
+    const rotateArray = async (arr, k) => {
+      k = k % arr.length; // Handle cases where k is larger than array length
+      const newArray = [...arr];
+      const totalSteps = k;
+
+      for (let step = 0; step < totalSteps; step++) {
+        await new Promise(resolve => setTimeout(resolve, delay));
+
+        // Rotate array by one step
+        newArray.unshift(newArray.pop()); // Pop last and unshift to the front
+        visualizeArray(newArray);
+
+        animateStep(step + 2); // Update pseudocode for current step
+      }
+
+      resultDisplay.textContent = `Array after ${totalSteps} rotations: [${newArray.join(", ")}]`;
+    };
+
+    const startRotation = () => {
+      const arrayInput = document.getElementById("array-input").value;
+      k = parseInt(document.getElementById("k-input").value);
+
+      // Convert input array to an actual array
+      array = arrayInput.split(",").map(Number);
+
+      visualizeArray(array);
+
+      // Start rotation visualization
+      rotateArray(array, k);
+    };
+
+    document.getElementById("start-rotation").addEventListener("click", startRotation);
+  </script>
+</body>
+</html>

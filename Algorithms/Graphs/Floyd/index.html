@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Floyd-Warshall Visualization</title>
+  <link href="https://unpkg.com/vis-network/styles/vis-network.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    #graph {
+      width: 80%;
+      height: 400px;
+      border: 1px solid lightgray;
+      margin: 20px auto;
+    }
+
+    .input-container {
+      margin: 20px;
+    }
+
+    .input-container input,
+    .input-container button {
+      margin: 10px;
+      padding: 10px;
+    }
+
+    #steps-container {
+      margin-top: 20px;
+    }
+
+    #pseudocode {
+      font-family: monospace;
+      background-color: #f4f4f4;
+      padding: 15px;
+      border: 1px solid #ccc;
+      width: 300px;
+      display: inline-block;
+      margin-top: 20px;
+    }
+
+    .highlight {
+      background-color: #f0e68c;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Floyd-Warshall Algorithm Visualization</h1>
+
+  <div class="input-container">
+    <input id="nodes-input" type="text" placeholder="Enter nodes (comma separated)" />
+    <input id="edges-input" type="text" placeholder="Enter edges (node1,node2,weight)" />
+    <button id="start-btn">Start Visualization</button>
+  </div>
+
+  <div id="graph"></div>
+  <div id="steps-container">
+    <button id="prev-step-btn" disabled>Prev Step</button>
+    <button id="next-step-btn" disabled>Next Step</button>
+  </div>
+
+  <div id="pseudocode"></div>
+
+  <script src="https://unpkg.com/vis-network/"></script>
+  <script>
+    const startBtn = document.getElementById("start-btn");
+    const prevStepBtn = document.getElementById("prev-step-btn");
+    const nextStepBtn = document.getElementById("next-step-btn");
+    const pseudocode = document.getElementById("pseudocode");
+
+    let nodes = [];
+    let edges = [];
+    let graphData = {};
+    let matrix = [];
+    let steps = [];
+    let currentStep = 0;
+
+    const container = document.getElementById('graph');
+    const options = {
+      nodes: {
+        shape: 'dot',
+        size: 20,
+      },
+      edges: {
+        width: 2,
+        font: {
+          size: 14,
+        },
+      },
+    };
+    const network = new vis.Network(container, graphData, options);
+
+    // Function to initialize graph from input
+    function initGraph() {
+      const nodesInput = document.getElementById("nodes-input").value;
+      const edgesInput = document.getElementById("edges-input").value;
+
+      nodes = nodesInput.split(',').map((node, idx) => ({ id: idx, label: node.trim() }));
+      edges = edgesInput.split(',').map(edge => {
+        const [from, to, weight] = edge.split(' ').map(item => item.trim());
+        return { from: nodes.find(n => n.label === from).id, to: nodes.find(n => n.label === to).id, label: weight, width: 2 };
+      });
+
+      graphData = { nodes, edges };
+      network.setData(graphData);
+    }
+
+    // Floyd-Warshall algorithm with step tracking
+    function floydWarshall() {
+      const n = nodes.length;
+      matrix = Array.from({ length: n }, () => Array(n).fill(Infinity));
+      for (let i = 0; i < n; i++) {
+        matrix[i][i] = 0;  // Distance from node to itself is 0
+      }
+
+      edges.forEach(edge => {
+        matrix[edge.from][edge.to] = parseInt(edge.label);
+      });
+
+      steps = [];
+      for (let k = 0; k < n; k++) {
+        for (let i = 0; i < n; i++) {
+          for (let j = 0; j < n; j++) {
+            if (matrix[i][j] > matrix[i][k] + matrix[k][j]) {
+              matrix[i][j] = matrix[i][k] + matrix[k][j];
+              steps.push({ i, j, k });
+            }
+          }
+        }
+      }
+    }
+
+    // Function to visualize the algorithm steps
+    function visualizeStep() {
+      const step = steps[currentStep];
+      const { i, j, k } = step;
+
+      const newEdges = edges.map(edge => {
+        if (edge.from === i && edge.to === j) {
+          edge.color = { color: 'red' };  // Highlight current edge
+        }
+        return edge;
+      });
+
+      graphData = { nodes, edges: newEdges };
+      network.setData(graphData);
+      updatePseudocode(step);
+    }
+
+    // Function to update pseudocode display
+    function updatePseudocode(step) {
+      const { i, j, k } = step;
+      pseudocode.innerHTML = `
+        Step ${currentStep + 1}: Update distance from node ${nodes[i].label} to ${nodes[j].label}<br>
+        Using node ${nodes[k].label} as intermediate: <br>
+        matrix[${i}][${j}] = Math.min(matrix[${i}][${j}], matrix[${i}][${k}] + matrix[${k}][${j}])<br>
+        Updated distance: ${matrix[i][j]}
+      `;
+    }
+
+    // Button event handlers
+    startBtn.addEventListener("click", function() {
+      initGraph();
+      floydWarshall();
+      prevStepBtn.disabled = false;
+      nextStepBtn.disabled = false;
+      currentStep = 0;
+      visualizeStep();
+    });
+
+    prevStepBtn.addEventListener("click", function() {
+      if (currentStep > 0) {
+        currentStep--;
+        visualizeStep();
+      }
+    });
+
+    nextStepBtn.addEventListener("click", function() {
+      if (currentStep < steps.length - 1) {
+        currentStep++;
+        visualizeStep();
+      }
+    });
+  </script>
+
+</body>
+</html>

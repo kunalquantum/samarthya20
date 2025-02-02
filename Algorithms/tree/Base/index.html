@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Tree Visualization</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Enhanced Tree Data Structure Visualization</h1>
+    </header>
+
+    <main>
+        <!-- Input Section -->
+        <section id="input-section">
+            <h2>Custom Input</h2>
+            <label for="tree-input">Enter Tree Nodes (Comma-separated, e.g., 1,2,3,null,4):</label>
+            <input type="text" id="tree-input" placeholder="e.g., 1,2,3,null,4">
+            <button id="generate-tree">Generate Tree</button>
+        </section>
+
+        <!-- Pseudocode Section -->
+        <section id="pseudocode-section">
+            <h2>Pseudocode</h2>
+            <pre id="pseudocode">
+function traverseTree(root):
+    if root is null:
+        return
+    visit root
+    traverseTree(root.left)
+    traverseTree(root.right)
+            </pre>
+        </section>
+
+        <!-- Visualization Section -->
+        <section id="visualization-section">
+            <h2>Visualization</h2>
+            <div id="tree-visualization"></div>
+        </section>
+
+        <!-- Controls Section -->
+        <section id="controls-section">
+            <h2>Step Controls</h2>
+            <button id="prev-step">Prev</button>
+            <button id="next-step">Next</button>
+            <button id="start-visualization">Start</button>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

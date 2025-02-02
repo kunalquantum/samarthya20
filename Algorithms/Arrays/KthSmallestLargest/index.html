@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kth Smallest/Largest Element</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #array-container {
+      margin-top: 20px;
+      position: relative;
+      width: 400px;
+      height: 100px;
+      margin-bottom: 50px;
+    }
+    .element {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      margin: 5px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 20px;
+      text-align: center;
+      vertical-align: bottom;
+      transition: transform 1s ease-in-out, background-color 0.5s ease;
+    }
+    #pseudocode {
+      font-family: monospace;
+      white-space: pre-wrap;
+      padding: 10px;
+      background-color: #f4f4f4;
+      border: 1px solid #ccc;
+      width: 300px;
+      display: inline-block;
+      margin-top: 20px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .highlight {
+      background-color: lightblue;
+      font-size: 1.2em;
+    }
+    .compare {
+      background-color: yellow;
+      font-size: 1.2em;
+    }
+    .swap {
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Kth Smallest/Largest Element in an Array</h1>
+  <input id="array-input" type="text" placeholder="Enter array (comma separated)" />
+  <input id="k-input" type="number" placeholder="Enter K" />
+  <select id="type-select">
+    <option value="smallest">Kth Smallest</option>
+    <option value="largest">Kth Largest</option>
+  </select>
+  <button id="start-finding">Find Kth Element</button>
+
+  <div id="array-container"></div>
+  <div id="pseudocode"></div>
+  <div id="result"></div>
+
+  <script>
+    let array = [];
+    let k = 0;
+    const arrayContainer = document.getElementById("array-container");
+    const pseudocodeDisplay = document.getElementById("pseudocode");
+    const resultDisplay = document.getElementById("result");
+    const delay = 1500;
+
+    const resetVisualization = () => {
+      arrayContainer.innerHTML = "";
+      resultDisplay.textContent = "";
+      pseudocodeDisplay.textContent = "";
+    };
+
+    const visualizeArray = (arr) => {
+      resetVisualization();
+      arr.forEach((el, index) => {
+        const elementDiv = document.createElement("div");
+        elementDiv.className = "element";
+        elementDiv.textContent = el;
+        elementDiv.id = `element-${index}`;
+        arrayContainer.appendChild(elementDiv);
+      });
+    };
+
+    const updatePseudocode = (step) => {
+      const pseudocodeSteps = [
+        "1. Initialize the array and k.",
+        "2. Sort the array using a sorting algorithm (e.g., selection sort).",
+        "3. Return the Kth smallest/largest element based on the user choice.",
+        "4. Display the result.",
+      ];
+
+      pseudocodeDisplay.innerHTML = pseudocodeSteps
+        .map((line, index) => {
+          if (index === step) {
+            return `<div class="highlight">${line}</div>`;
+          } else {
+            return `<div>${line}</div>`;
+          }
+        })
+        .join("");
+    };
+
+    const animateStep = (step) => {
+      updatePseudocode(step);
+    };
+
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    const swapElements = async (arr, index1, index2) => {
+      animateStep(2); // Highlight sorting step
+      const element1 = document.getElementById(`element-${index1}`);
+      const element2 = document.getElementById(`element-${index2}`);
+      
+      // Add visual feedback for swap operation
+      element1.classList.add("swap");
+      element2.classList.add("swap");
+      await sleep(delay / 2);
+
+      // Swap in DOM
+      [arr[index1], arr[index2]] = [arr[index2], arr[index1]];
+      element1.textContent = arr[index1];
+      element2.textContent = arr[index2];
+      await sleep(delay / 2);
+      
+      // Remove swap visual effect
+      element1.classList.remove("swap");
+      element2.classList.remove("swap");
+    };
+
+    const sortArray = async (arr) => {
+      const newArray = [...arr];
+      animateStep(1); // Highlight sorting step
+      for (let i = 0; i < newArray.length - 1; i++) {
+        let minIndex = i;
+        for (let j = i + 1; j < newArray.length; j++) {
+          const elementI = document.getElementById(`element-${i}`);
+          const elementJ = document.getElementById(`element-${j}`);
+          
+          // Add compare visual feedback
+          elementI.classList.add("compare");
+          elementJ.classList.add("compare");
+          await sleep(delay / 2);
+          
+          if (newArray[j] < newArray[minIndex]) {
+            minIndex = j;
+          }
+          
+          // Remove compare visual effect
+          elementI.classList.remove("compare");
+          elementJ.classList.remove("compare");
+        }
+        if (minIndex !== i) {
+          await swapElements(newArray, i, minIndex);
+        }
+      }
+      visualizeArray(newArray);
+      return newArray;
+    };
+
+    const findKthElement = async (arr, k, type) => {
+      const sortedArray = await sortArray(arr);
+      animateStep(3); // Highlight result step
+
+      let result = null;
+      if (type === "smallest") {
+        result = sortedArray[k - 1]; // Kth smallest element
+      } else {
+        result = sortedArray[sortedArray.length - k]; // Kth largest element
+      }
+
+      resultDisplay.textContent = `${type.charAt(0).toUpperCase() + type.slice(1)} Element: ${result}`;
+      animateStep(4); // Highlight display result step
+    };
+
+    const startFinding = () => {
+      const arrayInput = document.getElementById("array-input").value;
+      k = parseInt(document.getElementById("k-input").value);
+      const type = document.getElementById("type-select").value;
+
+      // Convert input array to an actual array
+      array = arrayInput.split(",").map(Number);
+
+      visualizeArray(array);
+
+      // Start finding Kth element
+      findKthElement(array, k, type);
+    };
+
+    document.getElementById("start-finding").addEventListener("click", startFinding);
+  </script>
+</body>
+</html>

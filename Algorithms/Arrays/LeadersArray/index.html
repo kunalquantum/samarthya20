@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaders in an Array Visualization</title>
+  <style>
+    .rectangle {
+      width: 30px;
+      margin: 0 5px;
+      display: inline-block;
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      font-size: 12px;
+      transition: height 1s ease, background-color 0.5s ease;
+    }
+    
+    .rectangle.selected {
+      background-color: #FF6347;
+      transform: scale(1.1);
+    }
+
+    .rectangle.leader {
+      background-color: #FFD700;
+    }
+
+    #array-container {
+      margin-top: 20px;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    #pseudocode {
+      margin-top: 20px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      padding: 10px;
+      background-color: #f4f4f4;
+      border: 1px solid #ccc;
+    }
+
+    #leaders {
+      margin-top: 20px;
+      font-family: monospace;
+      padding: 10px;
+      background-color: #f4f4f4;
+      border: 1px solid #ccc;
+    }
+
+    .step-box {
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      display: inline-block;
+      min-width: 100px;
+    }
+    
+    .highlight {
+      background-color: #FFFF00;
+      padding: 5px;
+    }
+    
+    .fade-in {
+      animation: fadeIn 2s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Leaders in an Array Algorithm Visualization</h1>
+  <input id="array-input" type="text" placeholder="Enter array (comma separated)" />
+  <button id="start-visualization">Start Visualization</button>
+  
+  <div id="array-container"></div>
+  <div id="pseudocode"></div>
+  <div id="leaders"></div>
+  
+  <script>
+    let array = [];
+    let leaders = [];
+    let delay = 2000; // Slower pace for better understanding
+    
+    const arrayContainer = document.getElementById("array-container");
+    const leadersDisplay = document.getElementById("leaders");
+    const pseudocodeDisplay = document.getElementById("pseudocode");
+    
+    const resetVisualization = () => {
+      arrayContainer.innerHTML = "";
+      leadersDisplay.textContent = "";
+      leaders = [];
+      pseudocodeDisplay.textContent = "";
+    };
+    
+    const visualizeArray = () => {
+      resetVisualization();
+      array.forEach((value, index) => {
+        const rect = document.createElement("div");
+        rect.className = "rectangle";
+        rect.style.height = `${Math.abs(value) * 20}px`;
+        rect.textContent = value;
+        rect.id = `rect-${index}`;
+        arrayContainer.appendChild(rect);
+      });
+    };
+
+    const highlightElement = (index) => {
+      const rects = document.querySelectorAll(".rectangle");
+      rects.forEach((rect, i) => {
+        if (i === index) {
+          rect.classList.add("selected");
+        } else {
+          rect.classList.remove("selected");
+        }
+      });
+    };
+    
+    const updatePseudocode = (step) => {
+      const pseudocodeSteps = [
+        "1. Initialize max_right = -∞",
+        "2. Traverse the array from right to left",
+        "3. For each element arr[i], check if arr[i] >= max_right",
+        "4. If true, mark arr[i] as a leader and update max_right",
+        "5. After traversal, print the leaders"
+      ];
+      
+      pseudocodeDisplay.textContent = pseudocodeSteps[step];
+    };
+
+    const animateStep = (element, step) => {
+      setTimeout(() => {
+        element.classList.add("fade-in");
+        updatePseudocode(step);
+      }, delay);
+    };
+
+    const findLeaders = () => {
+      return new Promise((resolve) => {
+        let max_right = -Infinity;
+        let currentLeader = null;
+
+        // Step 1: Initialize max_right
+        updatePseudocode(0);
+        setTimeout(() => {
+          for (let i = array.length - 1; i >= 0; i--) {
+            highlightElement(i);
+            animateStep(document.querySelector(`#rect-${i}`), 1);
+            
+            setTimeout(() => {
+              // Step 2: Compare element with max_right
+              if (array[i] >= max_right) {
+                // Step 3: Mark element as a leader
+                leaders.push(array[i]);
+                max_right = array[i];
+                document.querySelector(`#rect-${i}`).classList.add("leader");
+                currentLeader = array[i];
+              }
+
+              // Step 4: Update leader display
+              if (i === 0) {
+                setTimeout(() => {
+                  leaders.reverse();
+                  leadersDisplay.textContent = "Leaders: " + leaders.join(", ");
+                  resolve();
+                }, delay);
+              }
+            }, delay);
+          }
+        }, delay);
+      });
+    };
+
+    const startVisualization = async () => {
+      const input = document.getElementById("array-input").value;
+      array = input.split(",").map(Number);
+
+      visualizeArray(); // Display initial array
+
+      // Find leaders with visualization steps
+      await findLeaders();
+    };
+
+    document.getElementById("start-visualization").addEventListener("click", startVisualization);
+  </script>
+</body>
+</html>
