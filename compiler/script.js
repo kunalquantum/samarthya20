@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageInput = document.getElementById('messageInput');
     const outputContainer = document.getElementById('output');
     const submitButton = document.getElementById('submitButton');
-    const apiKey = 'AIzaSyAg-Z7EEI9cVarcCfyf8d9Ga6alzLAjM7w';
+    const apiKey = 'AIzaSyCq3ri9RLPVt11Y8nGYO5vcoxeSPN6CSbk';
     const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     submitButton.addEventListener('click', async () => {
@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const apiResponse = extractPlainTextResponse(data);
             displayOutput(apiResponse);
         } catch (error) {
+            console.log(error)
             console.error('Error:', error);
             displayOutput('An error occurred. Please try again later.');
         }
