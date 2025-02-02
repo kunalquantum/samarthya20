@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Tutor</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin-top: 50px;
+        }
+
+        .tutor-box,
+        .user-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .ai-response-content {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .messages {
+            height: 250px;
+            overflow-y: scroll;
+            margin-bottom: 20px;
+            padding-right: 10px;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-message {
+            background-color: #e1f5fe;
+            text-align: right;
+        }
+
+        .bot-message {
+            background-color: #c8e6c9;
+            text-align: left;
+        }
+
+        #sendBtn {
+            width: 100%;
+        }
+
+        #messageInput {
+            font-size: 14px;
+        }
+
+        .message-animation {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #conceptPoint,
+        #codePoint,
+        #doubtPoint,
+        #examplePoint,
+        #quizPoint {
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #conceptPoint:hover,
+        #codePoint:hover,
+        #doubtPoint:hover,
+        #examplePoint:hover,
+        #quizPoint:hover {
+            background-color: #e7e7e7;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <!-- Top section: AI Response -->
+        <div class="row">
+            <div class="col-12 tutor-box">
+                <h4>AI Tutor</h4>
+                <div id="aiResponse" class="ai-response-content">
+                    <!-- AI Responses will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom section: User Interaction -->
+        <div class="row">
+            <div class="col-12 user-section">
+                <h4>Ask a Question</h4>
+                <div class="user-interaction">
+                    <div id="messages" class="messages"></div>
+                    <textarea id="messageInput" class="form-control" rows="3"
+                        placeholder="Ask your question..."></textarea>
+                    <button id="sendBtn" class="btn btn-primary mt-2">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const messageInput = document.getElementById('messageInput');
+            const messagesContainer = document.getElementById('messages');
+            const sendButton = document.getElementById('sendBtn');
+            const aiResponseContainer = document.getElementById('aiResponse');
+
+            const apiKey = 'YOUR_API_KEY'; // Replace with your Google API key
+            const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+            const prePrompt = `
+Step 1: Assessing the Help Needed
+
+Bot: "Hi! What area or topic in data structures would you like help with today? Do you have a specific concept, such as stacks, queues, linked lists, or trees, that you want to understand better?"
+
+
+
+Step 2: Simple Explanation with Real-Life Analogies
+
+Bot: "Once the user mentions their topic, the bot will provide a simple explanation using real-life examples.
+
+Example (For stacks):
+
+"Imagine a stack as a pile of plates in a cafeteria. You add plates to the top of the stack, and when you need one, you take the plate from the top. This is called the Last In, First Out (LIFO) principle, which means the last item you add is the first one you remove."
+
+
+
+Step 3: Asking for Doubts
+
+Bot: "Does that explanation make sense? Do you have any questions or doubts about how stacks work?"
+
+
+
+Step 4: Providing Code Based on Comfort Language
+
+Bot: "What is your language of comfort (e.g., Python, Java, C++)? I’ll provide a simple code example in that language for you."
+
+
+
+Step 5: Explaining Code Line by Line
+
+Once the user provides their preferred language, the bot will give a small code example and explain each line step by step.
+
+Example (For Python stack):
+
+
+
+\`\`\`python
+class Stack:
+    def __init__(self):
+        self.stack = []
+
+    def push(self, item):
+        self.stack.append(item)
+
+    def pop(self):
+        if not self.is_empty():
+            return self.stack.pop()
+        return None
+
+    def is_empty(self):
+        return len(self.stack) == 0
+
+# Example usage
+stack = Stack()
+stack.push(10)
+stack.push(20)
+print(stack.pop())  # Output: 20
+\`\`\`
+
+Bot:
+
+- "Line 1: \`class Stack:\`  
+This defines a class called \`Stack\`, which represents our stack data structure. In object-oriented programming, a class is a template for creating objects."
+
+- "Line 2: \`def __init__(self):\`  
+This is the constructor method. It’s called when a new object of the class is created."
+
+- "Line 3: \`self.stack = []\`  
+This initializes an empty list to store elements in the stack."
+
+And so on for each line.
+
+
+
+Step 6: Iterative Example with User Interaction
+
+Bot: "Now, let’s work on a slightly more complex example. We will use a stack to reverse a string. Let’s break it down step by step. Here’s the algorithm:
+
+1. Initialize an empty stack.
+
+2. Push each character of the string onto the stack.
+
+3. Pop each character from the stack to form the reversed string."
+
+
+
+The bot then provides the code, and the user works through it step by step.
+
+
+
+Step 7: Small Quiz (<span id="quizProgress"></span>)
+
+Bot: "Let's quiz your understanding of stacks. Here are 5 questions. Each correct answer moves you forward."
+
+`;
+
+            let currentStep = 0;
+            const quizQuestions = [
+                "What is the main principle of a stack data structure?",
+                "Which operation in a stack removes the top item?",
+                "What is the time complexity of push and pop operations in a stack?",
+                "In which order are items removed from a stack?",
+                "What happens if you try to pop from an empty stack?"
+            ];
+            let correctAnswers = 0;
+
+            // Function to initialize the interaction
+            function initInteraction() {
+                sendMessage(prePrompt);
+            }
+
+            // Function to send a message and get AI response
+            function sendMessage(message) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', 'bot-message', 'message-animation');
+                messageDiv.textContent = message;
+                messagesContainer.appendChild(messageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            // Event listener for send button click
+            sendButton.addEventListener('click', () => {
+                const userMessage = messageInput.value.trim();
+                if (userMessage === '') return;
+                messageInput.value = '';
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', 'user-message', 'message-animation');
+                messageDiv.textContent = userMessage;
+                messagesContainer.appendChild(messageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                // Process user message (currently not implemented for brevity)
+            });
+
+            // Initialize interaction on page load
+            initInteraction();
+        });
+    </script>
+</body>
+
+</html>

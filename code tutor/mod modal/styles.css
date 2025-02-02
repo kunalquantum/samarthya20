@@ -1,0 +1,82 @@
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 800px;
+    margin-top: 50px;
+}
+
+.tutor-box, .user-section {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.ai-response-content {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.messages {
+    height: 250px;
+    overflow-y: scroll;
+    margin-bottom: 20px;
+    padding-right: 10px;
+}
+
+.message {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.user-message {
+    background-color: #e1f5fe;
+    text-align: right;
+}
+
+.bot-message {
+    background-color: #c8e6c9;
+    text-align: left;
+}
+
+#sendBtn {
+    width: 100%;
+}
+
+#messageInput {
+    font-size: 14px;
+}
+
+.message-animation {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#conceptPoint, #codePoint, #doubtPoint, #examplePoint, #quizPoint {
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#conceptPoint:hover, #codePoint:hover, #doubtPoint:hover, #examplePoint:hover, #quizPoint:hover {
+    background-color: #e7e7e7;
+}
