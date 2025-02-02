@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teachable Machine Image Model</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="animate__animated animate__fadeInDown">Image Classification</h1>
+        <p class="animate__animated animate__fadeInUp">Upload an image to see the predictions.</p>
+        <div class="upload-container animate__animated animate__fadeIn">
+            <label for="file-upload" class="upload-label">
+                <span>Choose an Image</span>
+                <input type="file" id="file-upload" accept="image/*" />
+            </label>
+        </div>
+        <div id="image-container" class="animate__animated animate__fadeIn"></div>
+        <div id="label-container" class="animate__animated animate__fadeIn"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
