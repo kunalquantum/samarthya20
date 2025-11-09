@@ -8,7 +8,11 @@ let lastX = 0;
 let lastY = 0;
 let predictInProgress = false; // Flag to track if prediction is in progress
 
-// Load the image model
+/**
+ * Loads the image model and initializes the application.
+ * Sets up the canvas, event listeners, and label container.
+ * @returns {Promise<void>}
+ */
 async function init() {
     const modelURL = URL + "model.json";
     const metadataURL = URL + "metadata.json";
@@ -47,13 +51,19 @@ async function init() {
     }
 }
 
-// Function to start drawing
+/**
+ * Starts the drawing process on the canvas.
+ * @param {MouseEvent} e - The mouse event.
+ */
 function startDrawing(e) {
     isDrawing = true;
     [lastX, lastY] = [e.offsetX, e.offsetY];
 }
 
-// Function to draw on canvas
+/**
+ * Draws a line on the canvas based on the mouse movement.
+ * @param {MouseEvent} e - The mouse event.
+ */
 function draw(e) {
     if (!isDrawing) return;
     ctx.beginPath();
@@ -63,12 +73,17 @@ function draw(e) {
     [lastX, lastY] = [e.offsetX, e.offsetY];
 }
 
-// Function to end drawing
+/**
+ * Ends the drawing process on the canvas.
+ */
 function endDrawing() {
     isDrawing = false;
 }
 
-// Function to submit drawing for classification
+/**
+ * Submits the drawing on the canvas for classification.
+ * @returns {Promise<void>}
+ */
 async function submitDrawing() {
     if (predictInProgress) return; // Prevent multiple predictions
     predictInProgress = true;
@@ -83,13 +98,19 @@ async function submitDrawing() {
     predictInProgress = false;
 }
 
-// Function to clear the canvas and redraw
+/**
+ * Clears the canvas and the prediction results.
+ */
 function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     labelContainer.innerHTML = ""; // Clear previous predictions
 }
 
-// Function to predict image from canvas
+/**
+ * Predicts the class of the drawing on the canvas using the loaded model.
+ * @param {HTMLCanvasElement} canvas - The canvas element containing the drawing.
+ * @returns {Promise<void>}
+ */
 async function predict(canvas) {
     const prediction = await model.predict(canvas);
     if (prediction.length > 0) {
