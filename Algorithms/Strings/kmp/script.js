@@ -10,6 +10,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const delay = 1500;
     let currentStep = 0;
 
+    /**
+     * Updates the pseudocode display to highlight the current step of the algorithm.
+     * @param {number} step - The step number to highlight.
+     */
     const updatePseudocode = (step) => {
         const pseudocodeSteps = [
             "1. Preprocess the pattern to build the LPS array.",
@@ -27,6 +31,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }).join('');
     };
 
+    /**
+     * Visualizes a string by creating and displaying character elements in a container.
+     * @param {string} str - The string to visualize.
+     * @param {HTMLElement} container - The container element to display the string in.
+     * @param {number} [highlightIndex=-1] - The index of the character to highlight.
+     */
     const visualizeString = (str, container, highlightIndex = -1) => {
         container.innerHTML = '';
         str.split('').forEach((char, index) => {
@@ -40,9 +50,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
+    /**
+     * Builds the Longest Proper Prefix which is also a Suffix (LPS) array for the KMP algorithm.
+     * @param {string} pattern - The pattern string to preprocess.
+     * @returns {number[]} The LPS array.
+     */
     const buildLPS = (pattern) => {
         const lps = Array(pattern.length).fill(0);
-        let length = 0; 
+        let length = 0;
         let i = 1;
 
         while (i < pattern.length) {
@@ -62,6 +77,12 @@ document.addEventListener('DOMContentLoaded', function () {
         return lps;
     };
 
+    /**
+     * Visualizes the LPS array by creating and displaying value elements in a container.
+     * @param {number[]} lps - The LPS array to visualize.
+     * @param {HTMLElement} container - The container element to display the LPS array in.
+     * @param {number} [highlightIndex=-1] - The index of the value to highlight.
+     */
     const visualizeLPS = (lps, container, highlightIndex = -1) => {
         container.innerHTML = '';
         lps.forEach((value, index) => {
@@ -75,6 +96,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
+    /**
+     * Performs the KMP search algorithm to find a pattern in a text, visualizing the process step-by-step.
+     * @param {string} text - The text to search in.
+     * @param {string} pattern - The pattern to search for.
+     * @returns {Promise<void>}
+     */
     const kmpSearch = async (text, pattern) => {
         const lps = buildLPS(pattern);
         let i = 0; // index for text

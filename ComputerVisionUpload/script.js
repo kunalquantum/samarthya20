@@ -1,14 +1,18 @@
-// the link to your model provided by Teachable Machine export panel
-const URL = "https://teachablemachine.withgoogle.com/models/kGC0alOa2/"; // here you will add the link okay.. 
+// The link to your model provided by Teachable Machine export panel
+const URL = "https://teachablemachine.withgoogle.com/models/kGC0alOa2/"; // Replace with your model's link
 
 let model, labelContainer, maxPredictions;
 
-// Load the image model
+/**
+ * Loads the image model and initializes the application.
+ * Sets up the file input and label container.
+ * @returns {Promise<void>}
+ */
 async function init() {
     const modelURL = URL + "model.json";
     const metadataURL = URL + "metadata.json";
 
-    // load the model and metadata
+    // Load the model and metadata
     model = await tmImage.load(modelURL, metadataURL);
     maxPredictions = model.getTotalClasses();
 
@@ -23,7 +27,11 @@ async function init() {
     }
 }
 
-// Handle file upload
+/**
+ * Handles the file upload event.
+ * Reads the uploaded image file, displays it, and triggers the prediction.
+ * @param {Event} event - The file upload event.
+ */
 function handleFileUpload(event) {
     const file = event.target.files[0];
     if (file) {
@@ -44,7 +52,12 @@ function handleFileUpload(event) {
     }
 }
 
-// Run the uploaded image through the image model
+/**
+ * Runs the uploaded image through the image model to get predictions.
+ * Updates the label container with the prediction results.
+ * @param {HTMLImageElement} image - The image to be classified.
+ * @returns {Promise<void>}
+ */
 async function predict(image) {
     // predict can take in an image, video, or canvas HTML element
     const prediction = await model.predict(image);

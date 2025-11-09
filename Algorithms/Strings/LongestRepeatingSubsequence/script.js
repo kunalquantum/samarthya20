@@ -1,3 +1,6 @@
+/**
+ * Visualizes the Longest Common Subsequence (LCS) algorithm by displaying the dynamic programming table and highlighting matching characters.
+ */
 function visualizeLCS() {
     // Clear previous visualization
     let visualization = document.getElementById('visualization');
@@ -26,6 +29,16 @@ function visualizeLCS() {
     }
 }
 
+/**
+ * Visualizes a single step of the LCS algorithm by creating and displaying a row with the characters being compared and highlighting them if they match.
+ * @param {number} i - The current row index in the DP table.
+ * @param {number} j - The current column index in the DP table.
+ * @param {number} length - The length of the LCS at the current step.
+ * @param {HTMLElement} visualization - The container element for the visualization.
+ * @param {string} char1 - The character from the first string.
+ * @param {string} char2 - The character from the second string.
+ * @param {number} delayFactor - The delay factor for the animation.
+ */
 function visualizeStep(i, j, length, visualization, char1, char2, delayFactor) {
     // Create row for current step
     let row = document.createElement('div');

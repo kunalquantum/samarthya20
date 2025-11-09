@@ -15,7 +15,9 @@ const missingNumberBox = document.getElementById("missing-number-value");
 
 const xorCalculationBox = document.getElementById("xor-detail");
 
-// Reset visualization
+/**
+ * Resets the visualization to its initial state, clearing the array container and resetting text content.
+ */
 const resetVisualization = () => {
   arrayContainer.innerHTML = "";
   sumMethodResult.textContent = "-";
@@ -26,7 +28,9 @@ const resetVisualization = () => {
   xorCalculationBox.textContent = "-";
 };
 
-// Visualize the array
+/**
+ * Visualizes the array by creating and displaying rectangle elements for each value.
+ */
 const visualizeArray = () => {
   resetVisualization();
   array.forEach(value => {
@@ -38,7 +42,10 @@ const visualizeArray = () => {
   });
 };
 
-// Step-by-step real-time update for Sum Method
+/**
+ * Finds the missing number in the array using the sum method in a step-by-step manner, updating the visualization at each step.
+ * @returns {Promise<number>} A promise that resolves with the missing number.
+ */
 const findMissingBySumStepByStep = () => {
   return new Promise((resolve) => {
     // Step 1: Calculate expected sum
@@ -58,7 +65,10 @@ const findMissingBySumStepByStep = () => {
   });
 };
 
-// Step-by-step real-time update for XOR Method
+/**
+ * Finds the missing number in the array using the XOR method in a step-by-step manner, updating the visualization at each step.
+ * @returns {Promise<number>} A promise that resolves with the missing number.
+ */
 const findMissingByXORStepByStep = () => {
   return new Promise((resolve) => {
     // Step 4: XOR all numbers from 1 to n
@@ -84,7 +94,10 @@ const findMissingByXORStepByStep = () => {
   });
 };
 
-// Start visualization with real-time interaction
+/**
+ * Starts the visualization process by parsing the input, visualizing the array, and finding the missing number using both sum and XOR methods.
+ * @returns {Promise<void>}
+ */
 const startVisualization = async () => {
   const input = document.getElementById("array-input").value;
   array = input.split(",").map(Number).sort((a, b) => a - b);

@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const delay = 1500;
     let currentStep = 0;
 
+    /**
+     * Updates the pseudocode display to highlight the current step of the algorithm.
+     * @param {number} step - The step number to highlight.
+     */
     const updatePseudocode = (step) => {
         const pseudocodeSteps = [
             "1. Start with the string.",
@@ -25,6 +29,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }).join('');
     };
 
+    /**
+     * Visualizes the string by creating and displaying character elements in the string container.
+     * @param {string} string - The string to visualize.
+     * @param {string} [addedChars=''] - The characters that have been added to the string to make it a palindrome.
+     */
     const visualizeString = (string, addedChars = '') => {
         stringContainer.innerHTML = '';
         const fullString = addedChars + string;
@@ -37,10 +46,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
+    /**
+     * Checks if a string is a palindrome.
+     * @param {string} str - The string to check.
+     * @returns {boolean} True if the string is a palindrome, false otherwise.
+     */
     const isPalindrome = (str) => {
         return str === str.split('').reverse().join('');
     };
 
+    /**
+     * Finds the prefix that needs to be added to the beginning of a string to make it a palindrome.
+     * @param {string} str - The string to process.
+     * @returns {string} The prefix to add to make the string a palindrome.
+     */
     const findPalindromePrefix = (str) => {
         for (let i = 0; i < str.length; i++) {
             const substring = str.slice(i);
@@ -51,6 +70,11 @@ document.addEventListener('DOMContentLoaded', function () {
         return '';
     };
 
+    /**
+     * Reverses the necessary prefix of a string to make it a palindrome, visualizing the process step-by-step.
+     * @param {string} str - The string to make a palindrome.
+     * @returns {Promise<void>}
+     */
     const reverseStringToMakePalindrome = async (str) => {
         let addedChars = '';
         let originalString = str;

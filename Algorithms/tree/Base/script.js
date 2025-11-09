@@ -24,7 +24,11 @@ generateTreeBtn.addEventListener("click", () => {
     generateSteps(root);
 });
 
-// Build Tree from Input Array
+/**
+ * Builds a binary tree from an array of node values.
+ * @param {Array<string>} nodes - An array of node values, where "null" represents an empty node.
+ * @returns {Object|null} The root node of the binary tree, or null if the input array is empty.
+ */
 function buildTree(nodes) {
     if (nodes.length === 0) return null;
 
@@ -51,7 +55,10 @@ function buildTree(nodes) {
     return root;
 }
 
-// Visualize Tree
+/**
+ * Visualizes a binary tree by creating and displaying node and connector elements in the DOM.
+ * @param {Object} root - The root node of the binary tree to visualize.
+ */
 function visualizeTree(root) {
     treeVisualization.innerHTML = ""; // Clear Previous Tree
     const treeData = [];
@@ -89,7 +96,14 @@ function visualizeTree(root) {
     });
 }
 
-// Create Tree Data for Visualization
+/**
+ * Creates an array of tree node data for visualization, including depth, position, and parent information.
+ * @param {Object} node - The current node to process.
+ * @param {number} depth - The depth of the current node in the tree.
+ * @param {number} position - The horizontal position of the current node.
+ * @param {Array<Object>} treeData - The array to store the tree node data.
+ * @param {Object|null} [parentNode=null] - The parent node of the current node.
+ */
 function createTreeData(node, depth, position, treeData, parentNode = null) {
     if (!node) return;
 
@@ -100,7 +114,10 @@ function createTreeData(node, depth, position, treeData, parentNode = null) {
     createTreeData(node.right, depth + 1, position + 1, treeData, treeNode);
 }
 
-// Generate Steps for Visualization
+/**
+ * Generates an array of steps for visualizing a tree traversal.
+ * @param {Object} root - The root node of the binary tree.
+ */
 function generateSteps(root) {
     steps = [];
     currentStep = 0;
@@ -116,7 +133,9 @@ function generateSteps(root) {
     highlightStep();
 }
 
-// Highlight Current Step
+/**
+ * Highlights the current step in the tree traversal visualization.
+ */
 function highlightStep() {
     const nodes = document.querySelectorAll(".node");
     nodes.forEach(node => node.classList.remove("highlight"));

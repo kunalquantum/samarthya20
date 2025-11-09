@@ -10,6 +10,9 @@ const equilibriumIndexDisplay = document.getElementById("equilibrium-index");
 const leftSumBox = document.getElementById("left-sum");
 const rightSumBox = document.getElementById("right-sum");
 
+/**
+ * Resets the visualization to its initial state, clearing the array container and resetting text content.
+ */
 const resetVisualization = () => {
   arrayContainer.innerHTML = "";
   equilibriumIndexDisplay.textContent = "-";
@@ -17,7 +20,9 @@ const resetVisualization = () => {
   rightSumBox.textContent = "Right Sum: -";
 };
 
-// Visualize the array
+/**
+ * Visualizes the array by creating and displaying rectangle elements for each value.
+ */
 const visualizeArray = () => {
   resetVisualization();
   array.forEach((value, index) => {
@@ -30,7 +35,10 @@ const visualizeArray = () => {
   });
 };
 
-// Highlight the current index being evaluated
+/**
+ * Highlights the rectangle at the specified index to indicate it's being evaluated.
+ * @param {number} index - The index of the rectangle to highlight.
+ */
 const highlightIndex = (index) => {
   const rects = document.querySelectorAll(".rectangle");
   rects.forEach((rect, i) => {
@@ -42,7 +50,10 @@ const highlightIndex = (index) => {
   });
 };
 
-// Step-by-step update for Equilibrium Index algorithm
+/**
+ * Finds the equilibrium index of the array in a step-by-step manner, updating the visualization at each step.
+ * @returns {Promise<number>} A promise that resolves with the equilibrium index, or -1 if none is found.
+ */
 const findEquilibriumIndex = () => {
   return new Promise((resolve) => {
     totalSum = array.reduce((acc, num) => acc + num, 0);
@@ -78,7 +89,10 @@ const findEquilibriumIndex = () => {
   });
 };
 
-// Start visualization with real-time interaction
+/**
+ * Starts the visualization process by parsing the input, visualizing the array, and finding the equilibrium index.
+ * @returns {Promise<void>}
+ */
 const startVisualization = async () => {
   const input = document.getElementById("array-input").value;
   array = input.split(",").map(Number);

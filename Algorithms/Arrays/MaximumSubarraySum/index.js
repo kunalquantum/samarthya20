@@ -10,7 +10,9 @@ const currentMaxSpan = document.getElementById("current-max");
 const maxSoFarSpan = document.getElementById("max-so-far");
 const subarrayIndicesSpan = document.getElementById("subarray-indices");
 
-// Reset the visualization
+/**
+ * Resets the visualization to its initial state, clearing the array container and resetting text content.
+ */
 const resetVisualization = () => {
   step = 0;
   currentMax = 0;
@@ -23,7 +25,12 @@ const resetVisualization = () => {
   subarrayIndicesSpan.textContent = "-";
 };
 
-// Highlight the subarray
+/**
+ * Highlights a subarray of rectangles in the visualization.
+ * @param {number} start - The starting index of the subarray to highlight.
+ * @param {number} end - The ending index of the subarray to highlight.
+ * @param {string} className - The CSS class to apply to the highlighted rectangles.
+ */
 const highlightSubarray = (start, end, className) => {
   document.querySelectorAll(".rectangle").forEach(rect => rect.classList.remove("subarray", "current", "max"));
   for (let i = start; i <= end; i++) {
@@ -31,7 +38,10 @@ const highlightSubarray = (start, end, className) => {
   }
 };
 
-// Update feedback
+/**
+ * Updates the feedback display with the current state of the algorithm.
+ * @param {number} currentElement - The current element being processed.
+ */
 const updateFeedback = (currentElement) => {
   currentElementSpan.textContent = currentElement;
   currentMaxSpan.textContent = currentMax;
@@ -39,7 +49,9 @@ const updateFeedback = (currentElement) => {
   subarrayIndicesSpan.textContent = `[${start}, ${end}]`;
 };
 
-// Visualize the array
+/**
+ * Visualizes the array by creating and displaying rectangle elements for each value.
+ */
 const visualizeArray = () => {
   arrayContainer.innerHTML = "";
   array.forEach((value, index) => {
@@ -51,7 +63,9 @@ const visualizeArray = () => {
   });
 };
 
-// Handle the next step
+/**
+ * Executes the next step of Kadane's algorithm to find the maximum subarray sum.
+ */
 const nextStep = () => {
   if (step >= array.length) return;
 

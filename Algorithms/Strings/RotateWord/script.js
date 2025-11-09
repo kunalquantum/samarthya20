@@ -4,12 +4,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const arrayContainer = document.getElementById('array-container');
     const pseudocodeElement = document.getElementById('pseudocode');
     const resultElement = document.getElementById('result');
-    
+
     let words = [];
     let currentStep = 0;
     const delay = 1500;
 
-    // Update pseudocode based on the step
+    /**
+     * Updates the pseudocode display to highlight the current step of the algorithm.
+     * @param {number} step - The step number to highlight.
+     */
     const updatePseudocode = (step) => {
         const pseudocodeSteps = [
             "1. Split the string into words.",
@@ -20,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
             "4. Join the words back into a string.",
             "5. Output the final reversed string."
         ];
-        
+
         pseudocodeElement.innerHTML = pseudocodeSteps.map((line, index) => {
             if (index === step) {
                 return `<div class="highlight">${line}</div>`;
@@ -30,7 +33,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }).join('');
     };
 
-    // Visualize the array (words) as elements
+    /**
+     * Visualizes the array of words by creating and displaying word elements in the array container.
+     */
     const visualizeWords = () => {
         arrayContainer.innerHTML = '';
         words.forEach((word, index) => {
@@ -42,11 +47,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    // Perform the reversal step by step
+    /**
+     * Reverses the order of words in a sentence, visualizing the process step-by-step.
+     * @returns {Promise<void>}
+     */
     const reverseWords = async () => {
         let left = 0;
         let right = words.length - 1;
-        
+
         // Total steps: left < right
         while (left < right) {
             updatePseudocode(currentStep);
@@ -57,20 +65,20 @@ document.addEventListener('DOMContentLoaded', function () {
             const rightElement = document.getElementById(`word-${right}`);
             leftElement.classList.add('swap');
             rightElement.classList.add('swap');
-            
+
             // Wait for animation before swap
             await new Promise(resolve => setTimeout(resolve, delay));
 
             // Swap words
             [words[left], words[right]] = [words[right], words[left]];
-            
+
             // Update words display after swap
             visualizeWords();
-            
+
             // Remove highlight
             leftElement.classList.remove('swap');
             rightElement.classList.remove('swap');
-            
+
             left++;
             right--;
         }
@@ -83,13 +91,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Start button event listener
     startButton.addEventListener('click', function () {
         const inputText = inputString.value.trim();
-        
+
         if (inputText === '') return;
 
         words = inputText.split(' ');
         currentStep = 0;
         resultElement.textContent = '';
-        
+
         visualizeWords();
         reverseWords();
     });

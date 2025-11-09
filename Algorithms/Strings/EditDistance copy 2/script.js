@@ -9,6 +9,9 @@ const leftMaxBox = document.getElementById("left-max");
 const rightMaxBox = document.getElementById("right-max");
 const waterTrappedBox = document.getElementById("water-trapped");
 
+/**
+ * Resets the visualization to its initial state, clearing the array container and resetting text content.
+ */
 const resetVisualization = () => {
   arrayContainer.innerHTML = "";
   totalWaterTrapped.textContent = "-";
@@ -17,7 +20,9 @@ const resetVisualization = () => {
   waterTrappedBox.textContent = "Water Trapped: -";
 };
 
-// Visualize the array
+/**
+ * Visualizes the array by creating and displaying rectangle elements for each value.
+ */
 const visualizeArray = () => {
   resetVisualization();
   array.forEach(value => {
@@ -30,7 +35,10 @@ const visualizeArray = () => {
   });
 };
 
-// Step-by-step update for Trapping Rain Water algorithm
+/**
+ * Calculates the amount of trapped rainwater in a step-by-step manner, updating the visualization at each step.
+ * @returns {Promise<number>} A promise that resolves with the total amount of trapped water.
+ */
 const calculateWaterTrapped = () => {
   return new Promise((resolve) => {
     let left = 0;
@@ -72,7 +80,10 @@ const calculateWaterTrapped = () => {
   });
 };
 
-// Start visualization with real-time interaction
+/**
+ * Starts the visualization process by parsing the input, visualizing the array, and calculating the trapped water.
+ * @returns {Promise<void>}
+ */
 const startVisualization = async () => {
   const input = document.getElementById("array-input").value;
   array = input.split(",").map(Number);

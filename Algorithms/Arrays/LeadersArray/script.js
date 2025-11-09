@@ -6,6 +6,9 @@ const arrayContainer = document.getElementById("array-container");
 const leadersDisplay = document.getElementById("leaders");
 const pseudocodeDisplay = document.getElementById("pseudocode");
 
+/**
+ * Resets the visualization to its initial state, clearing the array container and resetting text content.
+ */
 const resetVisualization = () => {
   arrayContainer.innerHTML = "";
   leadersDisplay.textContent = "-";
@@ -13,7 +16,9 @@ const resetVisualization = () => {
   pseudocodeDisplay.textContent = "";
 };
 
-// Visualize the array as bars
+/**
+ * Visualizes the array by creating and displaying rectangle elements for each value.
+ */
 const visualizeArray = () => {
   resetVisualization();
   array.forEach((value, index) => {
@@ -26,7 +31,10 @@ const visualizeArray = () => {
   });
 };
 
-// Highlight the current element being processed
+/**
+ * Highlights the rectangle at the specified index to indicate it's being evaluated.
+ * @param {number} index - The index of the rectangle to highlight.
+ */
 const highlightElement = (index) => {
   const rects = document.querySelectorAll(".rectangle");
   rects.forEach((rect, i) => {
@@ -38,7 +46,10 @@ const highlightElement = (index) => {
   });
 };
 
-// Show current step in pseudocode
+/**
+ * Displays the current step of the algorithm in the pseudocode display.
+ * @param {number} step - The step number to display.
+ */
 const displayPseudocode = (step) => {
   const pseudocodeSteps = [
     `1. Initialize max_right = -∞`,
@@ -51,7 +62,10 @@ const displayPseudocode = (step) => {
   pseudocodeDisplay.textContent = pseudocodeSteps[step];
 };
 
-// Step-by-step update for Leaders in Array
+/**
+ * Finds the leaders in the array in a step-by-step manner, updating the visualization at each step.
+ * @returns {Promise<void>} A promise that resolves when the leaders have been found.
+ */
 const findLeaders = () => {
   return new Promise((resolve) => {
     let max_right = -Infinity; // Step 1: Initialize max_right as -∞
@@ -84,7 +98,10 @@ const findLeaders = () => {
   });
 };
 
-// Start visualization with real-time interaction
+/**
+ * Starts the visualization process by parsing the input, visualizing the array, and finding the leaders.
+ * @returns {Promise<void>}
+ */
 const startVisualization = async () => {
   const input = document.getElementById("array-input").value;
   array = input.split(",").map(Number); // Parse input into array

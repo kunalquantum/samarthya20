@@ -53,6 +53,12 @@ document.getElementById('completeBtn').addEventListener('click', () => {
     }, 1000); // Adjust the delay (1000 ms = 1 second) as needed
 });
 
+/**
+ * Creates an array of steps for the string matching with wildcard algorithm.
+ * @param {string} string - The input string to match against the pattern.
+ * @param {string} pattern - The pattern containing wildcards ('?' and '*') to match against the string.
+ * @returns {Array<Object>} An array of step objects, each representing a state in the matching process.
+ */
 function createSteps(string, pattern) {
     const steps = [];
     let i = 0, j = 0;
@@ -94,6 +100,9 @@ function createSteps(string, pattern) {
     return steps;
 }
 
+/**
+ * Updates the visualization of the string and pattern, highlighting the characters at the current step.
+ */
 function updateVisualization() {
     const step = steps[currentStep];
     const stringDisplay = document.getElementById('stringDisplay');
@@ -124,6 +133,9 @@ function updateVisualization() {
     patternDisplay.innerHTML = patternHTML;
 }
 
+/**
+ * Updates the pseudocode display to highlight the current step of the algorithm.
+ */
 function updatePseudocode() {
     const pseudocode = document.getElementById('pseudocode');
     const step = steps[currentStep];
@@ -147,6 +159,9 @@ function updatePseudocode() {
     }).join('\n');
 }
 
+/**
+ * Handles the animation for the current step of the string matching algorithm.
+ */
 function handleStep() {
     const step = steps[currentStep];
 
@@ -179,6 +194,9 @@ function handleStep() {
     }
 }
 
+/**
+ * Clears all animations from the string and pattern display.
+ */
 function clearAnimations() {
     const stringElements = document.querySelectorAll('#stringDisplay span');
     const patternElements = document.querySelectorAll('#patternDisplay span');
@@ -192,6 +210,10 @@ function clearAnimations() {
     });
 }
 
+/**
+ * Animates a successful match between characters in the string and pattern.
+ * @param {Object} step - The current step object.
+ */
 function animateMatch(step) {
     const stringElements = document.querySelectorAll('#stringDisplay span');
     const patternElements = document.querySelectorAll('#patternDisplay span');
@@ -200,6 +222,10 @@ function animateMatch(step) {
     patternElements[step.j].classList.add('match');
 }
 
+/**
+ * Animates a mismatch between characters in the string and pattern.
+ * @param {Object} step - The current step object.
+ */
 function animateMismatch(step) {
     const stringElements = document.querySelectorAll('#stringDisplay span');
     const patternElements = document.querySelectorAll('#patternDisplay span');
@@ -208,11 +234,18 @@ function animateMismatch(step) {
     patternElements[step.j].classList.add('mismatch');
 }
 
+/**
+ * Animates the matching of a wildcard '*' at the end of the pattern.
+ * @param {Object} step - The current step object.
+ */
 function animateMatchEnd(step) {
     const patternElements = document.querySelectorAll('#patternDisplay span');
     patternElements[step.j].classList.add('match');
 }
 
+/**
+ * Animates the successful completion of the string matching algorithm.
+ */
 function animateSuccess() {
     const stringElements = document.querySelectorAll('#stringDisplay span');
     const patternElements = document.querySelectorAll('#patternDisplay span');
@@ -221,6 +254,9 @@ function animateSuccess() {
     patternElements.forEach(element => element.classList.add('match'));
 }
 
+/**
+ * Animates the failure of the string matching algorithm.
+ */
 function animateFailure() {
     const stringElements = document.querySelectorAll('#stringDisplay span');
     const patternElements = document.querySelectorAll('#patternDisplay span');

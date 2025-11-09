@@ -34,7 +34,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let steps = [];
     let currentStep = 0;
 
-    // Initialize an empty graph
+    /**
+     * Initializes an empty graph matrix with Infinity for all distances, except for the distance from a node to itself, which is 0.
+     */
     function initializeGraph() {
         graph = [];
         nodes.forEach(node => {
@@ -45,7 +47,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Update graph visualization
+    /**
+     * Updates the graph visualization with the new distances from the provided matrix.
+     * @param {number[][]} matrix - The distance matrix to use for updating the graph.
+     */
     function updateGraph(matrix) {
         edges.forEach(edge => {
             const weight = matrix[edge.from][edge.to];
@@ -54,7 +59,10 @@ document.addEventListener('DOMContentLoaded', function () {
         network.setData({ nodes, edges });
     }
 
-    // Update pseudocode display
+    /**
+     * Updates the pseudocode display to highlight the current step of the algorithm.
+     * @param {number} step - The step number to highlight.
+     */
     function updatePseudocode(step) {
         const pseudocodeSteps = [
             "1. Initialize the distance matrix from the graph.",
@@ -75,11 +83,14 @@ document.addEventListener('DOMContentLoaded', function () {
             .join("");
     }
 
-    // Perform Floyd-Warshall algorithm
+    /**
+     * Performs the Floyd-Warshall algorithm to find the shortest paths between all pairs of nodes in the graph.
+     * @returns {Promise<number[][]>} A promise that resolves with the final shortest distance matrix.
+     */
     async function floydWarshall() {
         const matrix = graph.map(row => row.slice()); // Copy graph to avoid modifying original
         const n = matrix.length;
-        
+
         steps = [];
 
         for (let k = 0; k < n; k++) {
@@ -97,7 +108,10 @@ document.addEventListener('DOMContentLoaded', function () {
         return matrix;
     }
 
-    // Show the final result
+    /**
+     * Displays the final shortest distance matrix in the result container.
+     * @param {number[][]} finalMatrix - The final shortest distance matrix to display.
+     */
     function showResult(finalMatrix) {
         resultContainer.innerHTML = 'Final Shortest Distance Matrix:<br>';
         let resultText = '';
@@ -107,7 +121,10 @@ document.addEventListener('DOMContentLoaded', function () {
         resultContainer.innerHTML += resultText;
     }
 
-    // Step through the algorithm and animate
+    /**
+     * Steps through the Floyd-Warshall algorithm, animating the changes to the graph and pseudocode at each step.
+     * @returns {Promise<void>}
+     */
     async function stepThrough() {
         const finalMatrix = await floydWarshall();
 
